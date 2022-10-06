@@ -1,1 +1,1 @@
-# schox-client
+# SCHOX Client - Final Project
