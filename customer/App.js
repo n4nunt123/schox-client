@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import {StyleSheet, Text, View, TextInput, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, TextInput, ScrollView, Image, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {useState} from "react";
+import { useState } from "react";
 
 export default function App() {
   const [registerForm, setRegisterForm] = useState({
