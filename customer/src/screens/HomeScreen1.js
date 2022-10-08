@@ -1,16 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import {Image, StyleSheet, Text, View} from "react-native";
+import {StatusBar} from 'expo-status-bar';
 
 import iconSubs from '../../assets/icon/Subscribe.png';
 import iconProfl from '../../assets/icon/SeekPng.com_profile-icon-png_9665493.png'
 
-function HomeScreen1() {
+
+export default function HomeScreen({navigation}) {
+    // pake conditional rendering
     return (
         <View style={styles.container}>
             <View style={styles.userView}>
                 <Image style={styles.iconProfl}
-                    source={iconProfl} />
-                <View style={{ marginStart: 15 }}>
+                       source={iconProfl}/>
+                <View style={{marginStart: 15}}>
                     <Text style={styles.hallo}>Hallo, User!</Text>
                     <Text style={styles.date}>Kamis, 21 Januari 2022</Text>
                 </View>
@@ -20,14 +22,39 @@ function HomeScreen1() {
                     <Text style={styles.infoText}>Kamu belum{"\n"}ada subscription</Text>
                 </View>
                 <Image style={styles.iconSubs}
-                    source={iconSubs} />
+                       source={iconSubs}/>
                 <View>
                     <Text style={styles.subsText}>Subscribe Now</Text>
                 </View>
             </View>
-            <StatusBar style="auto" />
+            <StatusBar style="auto"/>
         </View>
-    );
+    )
+
+    // return (
+//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//         <Text>HOME SCREEN</Text>
+//
+//         <Button
+//             title='STATUS PERJALANAN'
+//             color='red'
+//             onPress={() => navigation.navigate('Trip')}
+//         />
+//
+//         <Button
+//             title='DRIVER'
+//             color='red'
+//             onPress={() => navigation.navigate('Driver')}
+//         />
+//
+//         <Button
+//             title='SCHOOL'
+//             color='red'
+//             onPress={() => navigation.navigate('School')}
+//         />
+//
+//     </View>
+// )
 }
 
 const styles = StyleSheet.create({
@@ -88,5 +115,3 @@ const styles = StyleSheet.create({
         fontSize: 17,
     }
 });
-
-export default HomeScreen1;
