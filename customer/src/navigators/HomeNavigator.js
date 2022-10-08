@@ -19,17 +19,17 @@ export default function HomeNavigator() {
         <Stack.Screen 
           name="Trip" 
           component={TripScreen}
-          options={{ headerShown: true }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen 
           name="Driver" 
           component={DriverScreen} 
-          options={{ headerShown: true }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen 
           name="School" 
           component={SchoolScreen} 
-          options={{ headerShown: true }}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
   )

@@ -16,7 +16,9 @@ export default function SubscriptionScreen({ navigation }) {
     return (
         <View style={{alignItems: "center", justifyContent: "center"}}>
           <View style={styles.price}>
-              <Text style={{fontSize: 32, fontWeight: "bold"}}>Rp. 300.000,00</Text>
+              <Text style={styles.rp}>Rp</Text>
+              <Text style={{fontSize: 32, fontWeight: "bold", color: '#212a72'}}>300.000</Text>
+              <Text style={styles.time}>/week</Text>
           </View>
             <Image style={{width: 200, height: 200, marginVertical: 20}} source={require("../../assets/icon/Subscribe.png")} />
             <TouchableHighlight style={styles.subs} onPress={() => navigation.navigate('Profile')}>
@@ -29,12 +31,14 @@ export default function SubscriptionScreen({ navigation }) {
   const renderMonthly = () => {
     return (
         <View style={{alignItems: "center", justifyContent: "center"}}>
-            <View style={styles.price}>
-                <Text style={{fontSize: 32, fontWeight: "bold"}}>Rp. 1.000.000,00</Text>
+            <View style={[styles.price]}>
+              <Text style={styles.rp}>Rp</Text>
+              <Text style={{fontSize: 32, fontWeight: "bold", color: '#212a72'}}>1.000.000</Text>
+              <Text style={styles.time}>/month</Text>
             </View>
             <Image style={{width: 200, height: 200, marginVertical: 20}} source={require("../../assets/icon/Subscribe.png")} />
             <TouchableHighlight style={styles.subs} onPress={() => navigation.navigate('Profile')}>
-                <Text style={{color: "white", fontSize: 14}}>Subscribe Now</Text>
+                <Text style={{color: "white", fontSize: 14, fontWeight: 'bold'}}>Subscribe Now</Text>
             </TouchableHighlight>
         </View>
   )
@@ -42,7 +46,7 @@ export default function SubscriptionScreen({ navigation }) {
 
   return (
     <View style={styles.top}>
-        <Text style={{color: "#2D367F", fontSize: 28, paddingTop: 50, fontWeight: "bold"}}>Subscription</Text>
+        <Text style={{color: "white", fontSize: 28, paddingTop: 50, fontWeight: "bold", marginLeft: 15}}>Subscription</Text>
         <View style={styles.container}>
             <View style={{ flexDirection: 'row', marginBottom: 20 }}>
                 <TouchableHighlight style={styles.subtype} onPress={weekly}>
@@ -61,14 +65,14 @@ export default function SubscriptionScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    top: { flex: 1, alignItems: 'center', marginTop: 20, backgroundColor: "#DEE8FF" },
+    top: { flex: 1, backgroundColor: "#2b377e" },
     container: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "white",
         width: "100%",
-        marginTop: 100,
+        marginTop: 50,
         borderTopStartRadius: 30,
         borderTopEndRadius: 30,
         paddingTop: 20
@@ -80,7 +84,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: "center",
         borderRadius: 30,
-        marginHorizontal: 5
+        marginHorizontal: 5,
+    },
+    time: {
+        marginTop: 10,
+        color: "#9799b4"
     },
     price: {
         width: 280,
@@ -89,12 +97,19 @@ const styles = StyleSheet.create({
         borderRadius: 60,
         alignItems: 'center',
         justifyContent: "center",
-        borderColor: "#2D367F"
+        borderColor: "#2D367F",
+        flexDirection: 'row',
+        marginBottom: 50
+    },
+    rp: {
+        marginBottom: 20,
+        marginRight: 5,
+        color: '#212a72'
     },
     subs: {
         backgroundColor: "#2D367F",
-        width: 170,
-        height: 50,
+        width: 140,
+        height: 40,
         alignItems: 'center',
         justifyContent: "center",
         borderRadius: 30,
