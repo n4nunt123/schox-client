@@ -13,7 +13,7 @@ export default function SubscriptionNavigator() {
       <Stack.Screen
         name="ProfileScreen"
         component={ProfileScreen}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Midtrans"
