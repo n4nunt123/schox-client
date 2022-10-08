@@ -58,7 +58,7 @@ export default function App() {
             </Tab.Navigator>
         </NavigationContainer>
 
-        //LOGIN PAGE
+
         // <SafeAreaView style={styles.container}>
         //     <View style={styles.card}>
         //         <Image source={require("./assets/logo.png")} style={styles.logo} />
