@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         flex: 4,
         alignItems: "flex-start",
         justifyContent: "flex-start",
-        width: "90%",
+        width: "100%",
         backgroundColor: "white",
         borderTopStartRadius: 30,
         borderTopEndRadius: 30,
