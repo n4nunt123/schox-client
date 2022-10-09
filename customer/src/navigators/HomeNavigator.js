@@ -1,6 +1,5 @@
 import * as React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import HomeScreen from "../screens/HomeScreen";
 import TripScreen from "../screens/TripScreen";
@@ -9,15 +8,7 @@ import SchoolScreen from "../screens/SchoolScreen";
 
 const Stack = createNativeStackNavigator();
 
-export default function HomeNavigator({ navigation, route }) {
-  React.useLayoutEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === "Driver"){
-        navigation.setOptions({tabBarVisible: false});
-    }else {
-        navigation.setOptions({tabBarVisible: true});
-    }
-}, [navigation, route]);
+export default function HomeNavigator() {
   return (
     <Stack.Navigator initialRouteName="HomeScreen">
       <Stack.Screen
@@ -34,11 +25,6 @@ export default function HomeNavigator({ navigation, route }) {
         name="Driver"
         component={DriverScreen}
         options={{ headerShown: true }}
-        onPress={() =>
-          props.navigation.setOptions({
-          tabBarVisible: true
-          })
-        }
       />
       <Stack.Screen
         name="School"
