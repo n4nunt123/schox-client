@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import SubscriptionScreen from '../screens/Subs1';
+import SubscriptionScreen from '../screens/ChooseSubscription';
 import MidtransScreen from '../screens/MidtransScreen';
 
 const Stack = createNativeStackNavigator();
@@ -12,7 +12,7 @@ export default function SubscriptionNavigator() {
         <Stack.Screen 
           name="SubcriptionScreen" 
           component={SubscriptionScreen}
-          options={{ headerShown: true }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen 
           name="Midtrans" 

@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
-function SubsScreen2() {
+function SubsScreen() {
     return (
         <View style={styles.container}>
             <View style={styles.subsView}>
@@ -73,4 +73,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SubsScreen2;
+export default SubsScreen;
