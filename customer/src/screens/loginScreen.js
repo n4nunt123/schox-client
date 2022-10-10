@@ -14,11 +14,8 @@ import logo from "../../assets/logo1.png";
 
 export default function RegisterScreen() {
   const [registerForm, setRegisterForm] = useState({
-    name: "",
     email: "",
     password: "",
-    phoneNumber: "",
-    address: "",
   });
   return (
     <ImageBackground
@@ -26,48 +23,29 @@ export default function RegisterScreen() {
       style={styles.container}
     >
       <Image source={logo} style={styles.logo} />
+      <Text style={styles.desc}>Please Sign in to continue</Text>
 
       <TextInput
         style={[styles.input, { marginTop: 50 }]}
-        onChangeText={setRegisterForm.name}
-        value={registerForm.name}
-        placeholder="Name"
-      />
-      <TextInput
-        style={styles.input}
         onChangeText={setRegisterForm.email}
         value={registerForm.email}
         placeholder="Email"
       />
       <TextInput
         style={styles.input}
-        onChangeText={setRegisterForm.phoneNumber}
-        value={registerForm.phoneNumber}
-        placeholder="Passoword"
-      />
-      <TextInput
-        style={styles.input}
         onChangeText={setRegisterForm.password}
         value={registerForm.password}
-        placeholder="Phone Number"
+        placeholder="Passoword"
       />
-      <TextInput
-        style={styles.input}
-        onChangeText={setRegisterForm.address}
-        value={registerForm.address}
-        placeholder="Address"
-      />
-      <TouchableHighlight style={styles.submit} onPress>
-        <Text style={styles.submitText}>Register</Text>
+      <TouchableHighlight style={styles.submit} underlayColor="#fff">
+        <Text style={styles.submitText}>Login</Text>
       </TouchableHighlight>
 
       <StatusBar style="auto" />
 
       <View style={styles.control}>
-        <Text style={styles.desc}>Already have a account? </Text>
-        <TouchableHighlight onPress>
-          <Text style={[styles.desc, { color: "white" }]}>Sign in</Text>
-        </TouchableHighlight>
+        <Text style={styles.desc}>Don't have an account? </Text>
+        <Text style={[styles.desc, {color: 'white'}]}>Sign Up</Text>
       </View>
     </ImageBackground>
   );
@@ -97,7 +75,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 130,
     height: 30,
-    marginTop: 105,
+    marginTop: 220,
   },
   desc: {
     color: "#a0acda",
@@ -117,8 +95,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   control: {
-    flexDirection: "row",
-    marginTop: 130,
-    marginLeft: 70,
-  },
+    flexDirection: 'row',
+    marginTop: 200,
+    marginLeft: 70
+  }
 });

@@ -53,7 +53,7 @@ export default function ProfilePage({ navigation }) {
         </View>
         <View style={styles.menuRow}>
           <Image style={styles.menu} source={logOut} />
-          <Text style={styles.textMenu}>logOut</Text>
+          <Text style={[styles.textMenu, {color: '#ee5d6b'}]}>logOut</Text>
         </View>
       </View>
     </View>
