@@ -1,61 +1,103 @@
 import { color } from "@rneui/base";
-import {Button, Image, Pressable, ScrollView, StyleSheet, Text, TouchableHighlight, View} from "react-native";
+import {
+    AsyncStorage,
+    Button,
+    Image,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableHighlight,
+    View
+} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
+import {useState} from "react";
+import * as React from "react";
+import axios from "axios";
+import {useFocusEffect} from "@react-navigation/native";
+import {StatusBar} from "expo-status-bar";
 
 export default function HomeScreen({navigation}) {
-    // pake conditional rendering
-    // return (
-    //     <View style={styles.container}>
-    //         <View style={styles.userView}>
-    //             <Image style={styles.iconProfl}
-    //                    source={iconProfl}/>
-    //             <View style={{marginStart: 15}}>
-    //                 <Text style={styles.hallo}>Hallo, User!</Text>
-    //                 <Text style={styles.date}>Kamis, 21 Januari 2022</Text>
-    //             </View>
-    //         </View>
-    //         <View style={styles.mainCard}>
-    //             <View style={styles.infoView}>
-    //                 <Text style={styles.infoText}>Kamu belum{"\n"}ada subscription</Text>
-    //             </View>
-    //             <Image style={styles.iconSubs}
-    //                    source={iconSubs}/>
-    //             <View>
-    //                 <Text style={styles.subsText}>Subscribe Now</Text>
-    //             </View>
-    //         </View>
-    //         <StatusBar style="auto"/>
-    //     </View>
-    // )
+    const [detail, setDetail] = useState({})
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.topChild}>
-                <View style={{flex: 1}}>
-                    <Image source={require("../../assets/icon/SeekPng.com_profile-icon-png_9665493.png")} style={{width: 50, height: 50}} />
-                </View>
-                <View style={{flex: 4, flexDirection: "column"}}>
-                    <Text style={{fontSize: 22, fontWeight: 'bold', color: '#2b377e'}}>Hello, User</Text>
-                    <Text style={{color: "#a7a8c1"}}>10 October 2022</Text>
-                </View>
-            </View>
-            <Pressable onPress={() => navigation.navigate('Trip')} style={styles.containerChild}>
-                <Image source={require("../../assets/road.png")} style={{width: 100, height: 100}} />
-                <View style={{flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
-                    <Text style={styles.cardText}>Trip Status</Text>
-                    <Text style={styles.tripStatus}>On the way</Text>
-                </View>
-            </Pressable>
-            <Pressable onPress={() => navigation.navigate('Driver')} style={styles.containerChild}>
-                <Image source={require("../../assets/driver.png")} style={{width: 100, height: 100}} />
-                <Text style={styles.cardText}>Driver</Text>
-            </Pressable>
-            <Pressable onPress={() => navigation.navigate('School')} style={styles.containerChild}>
-                <Image source={require("../../assets/school.png")} style={{width: 100, height: 100}} />
-                <Text style={styles.cardText}>School</Text>
-            </Pressable>
-        </SafeAreaView>
+    const getData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            let value = JSON.parse(jsonValue)
+            await detailCustomer(value?.id)
+        } catch(e) {
+            console.log(e)
+        }
+    }
+    const detailCustomer = async (id) => {
+        try {
+            const { data } = await axios({
+                url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/users/" + id,
+                method: "GET"
+            })
+            setDetail(data)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            getData()
+        }, [])
     )
+
+    if (!detail?.SubscriptionId) {
+        return (
+            <View style={styles.container}>
+                <View style={styles.userView}>
+
+                    <View style={{marginStart: 15}}>
+                        <Text style={styles.hallo}>Hello, {detail.fullName}!</Text>
+                        <Text style={styles.date}>Kamis, 21 Januari 2022</Text>
+                    </View>
+                </View>
+                <View style={styles.mainCard}>
+                    <View style={styles.infoView}>
+                        <Text style={styles.infoText}>Kamu belum{"\n"}ada subscription</Text>
+                    </View>
+                    <TouchableHighlight onPress={() => navigation.navigate("SubcriptionScreen")}>
+                        <Text style={styles.subsText}>Subscribe Now</Text>
+                    </TouchableHighlight>
+                </View>
+                <StatusBar style="auto"/>
+            </View>
+        )
+    } else {
+        return (
+            <SafeAreaView style={styles.container}>
+                <View style={styles.topChild}>
+                    <View style={{flex: 1}}>
+                        <Image source={require("../../assets/icon/SeekPng.com_profile-icon-png_9665493.png")} style={{width: 50, height: 50}} />
+                    </View>
+                    <View style={{flex: 4, flexDirection: "column"}}>
+                        <Text style={{fontSize: 22, fontWeight: 'bold', color: '#2b377e'}}>Hello, {detail?.fullName}</Text>
+                        <Text style={{color: "#a7a8c1"}}>10 October 2022</Text>
+                    </View>
+                </View>
+                <Pressable onPress={() => navigation.navigate('Trip')} style={styles.containerChild}>
+                    <Image source={require("../../assets/road.png")} style={{width: 100, height: 100}} />
+                    <View style={{flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+                        <Text style={styles.cardText}>Trip Status</Text>
+                        <Text style={styles.tripStatus}>On the way</Text>
+                    </View>
+                </Pressable>
+                <Pressable onPress={() => navigation.navigate('Driver')} style={styles.containerChild}>
+                    <Image source={require("../../assets/driver.png")} style={{width: 100, height: 100}} />
+                    <Text style={styles.cardText}>Driver</Text>
+                </Pressable>
+                <Pressable onPress={() => navigation.navigate('School')} style={styles.containerChild}>
+                    <Image source={require("../../assets/school.png")} style={{width: 100, height: 100}} />
+                    <Text style={styles.cardText}>School</Text>
+                </Pressable>
+            </SafeAreaView>
+        )
+    }
 }
 
 const styles = StyleSheet.create({

@@ -6,7 +6,6 @@ import HomeScreen from "../screens/HomeScreen";
 import TripScreen from "../screens/TripScreen";
 import DriverScreen from "../screens/DriverScreen";
 import SchoolScreen from "../screens/SchoolScreen";
-import RegisterScreen from "../screens/RegisterScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,22 +30,17 @@ export default function HomeNavigator({ navigation, route }) {
       <Stack.Screen
         name="Trip"
         component={TripScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name="Driver"
-        component={RegisterScreen}
-        options={{ headerShown: false }}
-        onPress={() =>
-          props.navigation.setOptions({
-            tabBarVisible: true,
-          })
-        }
+        component={DriverScreen}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name="School"
         component={SchoolScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
     </Stack.Navigator>
   );
