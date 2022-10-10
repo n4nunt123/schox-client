@@ -1,9 +1,9 @@
 import { color } from "@rneui/base";
+import { useEffect } from "react";
 import {Button, Image, Pressable, ScrollView, StyleSheet, Text, TouchableHighlight, View} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 
-
-export default function HomeScreen({navigation}) {
+export default function HomeScreen({ navigation, route }) {
     // pake conditional rendering
     // return (
     //     <View style={styles.container}>
