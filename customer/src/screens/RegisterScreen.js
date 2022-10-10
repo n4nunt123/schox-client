@@ -6,20 +6,23 @@ import {
   ImageBackground,
   Image,
   TouchableHighlight,
-  View,
+  View, Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import logo from "../../assets/logo1.png";
 
-export default function RegisterScreen() {
-  const [registerForm, setRegisterForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    phoneNumber: "",
-    address: "",
-  });
+
+export default function RegisterScreen({navigation}) {
+
+  const [fullName, setFullName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [address, setAddress] = useState("")
+  const [childrenName, setChildrenName] = useState("")
+  const [houseCoordinate, setHouseCoordinate] = useState("")
+
   return (
     <ImageBackground
       source={require("../../assets/background.png")}
@@ -29,46 +32,53 @@ export default function RegisterScreen() {
 
       <TextInput
         style={[styles.input, { marginTop: 50 }]}
-        onChangeText={setRegisterForm.name}
-        value={registerForm.name}
+        onChangeText={setFullName}
+        value={fullName}
         placeholder="Name"
       />
       <TextInput
         style={styles.input}
-        onChangeText={setRegisterForm.email}
-        value={registerForm.email}
+        onChangeText={setEmail}
+        value={email}
         placeholder="Email"
       />
       <TextInput
         style={styles.input}
-        onChangeText={setRegisterForm.phoneNumber}
-        value={registerForm.phoneNumber}
-        placeholder="Passoword"
+        onChangeText={setPassword}
+        value={password}
+        placeholder="Password"
       />
       <TextInput
         style={styles.input}
-        onChangeText={setRegisterForm.password}
-        value={registerForm.password}
+        onChangeText={setPhoneNumber}
+        value={phoneNumber}
         placeholder="Phone Number"
       />
       <TextInput
         style={styles.input}
-        onChangeText={setRegisterForm.address}
-        value={registerForm.address}
+        onChangeText={setAddress}
+        value={address}
         placeholder="Address"
       />
-      <TouchableHighlight style={styles.submit} onPress>
+
+      <TextInput
+          style={styles.input}
+          onChangeText={setChildrenName}
+          value={childrenName}
+          placeholder="Your children name"
+      />
+      <TouchableHighlight style={styles.submit} underlayColor="#fff">
+
         <Text style={styles.submitText}>Register</Text>
       </TouchableHighlight>
 
-      <StatusBar style="auto" />
-
       <View style={styles.control}>
         <Text style={styles.desc}>Already have a account? </Text>
-        <TouchableHighlight onPress>
-          <Text style={[styles.desc, { color: "white" }]}>Sign in</Text>
-        </TouchableHighlight>
+        <Pressable onPress={() => navigation.navigate("login")}>
+          <Text style={[styles.desc, {color: 'white'}]}>Sign in</Text>
+        </Pressable>
       </View>
+      <StatusBar style="auto" />
     </ImageBackground>
   );
 }
@@ -92,7 +102,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "white",
     borderRadius: 30,
-    width: 380,
+    width: '90%',
   },
   logo: {
     width: 130,
@@ -106,15 +116,15 @@ const styles = StyleSheet.create({
   submit: {
     borderRadius: 40,
     backgroundColor: "#a0acda",
-    width: 100,
-    paddingTop: 14,
-    paddingBottom: 14,
-    backgroundColor: "#a0acda",
-    marginLeft: 290,
+    width: 80,
+    paddingVertical: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: '70%',
+    marginTop: 10
   },
   submitText: {
     color: "#fff",
-    textAlign: "center",
   },
   control: {
     flexDirection: "row",

@@ -6,17 +6,67 @@ import {
   ImageBackground,
   Image,
   TouchableHighlight,
-  View,
+  View, Alert, BackHandler, Pressable, AsyncStorage,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import logo from "../../assets/logo1.png";
+import axios from "axios";
 
-export default function RegisterScreen() {
-  const [registerForm, setRegisterForm] = useState({
-    email: "",
-    password: "",
-  });
+export default function LoginScreen({navigation}) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('@storage_Key', jsonValue)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@storage_Key')
+      return jsonValue != null ? navigation.navigate("Home") : null;
+    } catch(e) {
+      console.log(e)
+    }
+  }
+
+  const login = async () => {
+    try {
+      const { data } = await axios({
+        url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/users/login",
+        method: "POST",
+        data: {email, password}
+      })
+      await storeData({id: data.id})
+      navigation.navigate({
+        name: "Home",
+        // params: {id: data.id}
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const backAction = () => {
+    Alert.alert("Hold on!", "Are you sure you want to exit the app?", [
+      {
+        text: "Cancel",
+        onPress: () => null,
+        style: "cancel"
+      },
+      { text: "YES", onPress: () => BackHandler.exitApp() }
+    ]);
+    return true;
+  };
+
+  useEffect(() => {
+    getData()
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () => BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, [])
   return (
     <ImageBackground
       source={require("../../assets/background.png")}
@@ -27,26 +77,27 @@ export default function RegisterScreen() {
 
       <TextInput
         style={[styles.input, { marginTop: 50 }]}
-        onChangeText={setRegisterForm.email}
-        value={registerForm.email}
+        onChangeText={setEmail}
+        value={email}
         placeholder="Email"
       />
       <TextInput
         style={styles.input}
-        onChangeText={setRegisterForm.password}
-        value={registerForm.password}
-        placeholder="Passoword"
+        onChangeText={setPassword}
+        value={password}
+        placeholder="Password"
       />
-      <TouchableHighlight style={styles.submit} underlayColor="#fff">
+      <TouchableHighlight onPress={() => login()} style={styles.submit} underlayColor="#fff">
         <Text style={styles.submitText}>Login</Text>
       </TouchableHighlight>
 
-      <StatusBar style="auto" />
-
       <View style={styles.control}>
         <Text style={styles.desc}>Don't have an account? </Text>
-        <Text style={[styles.desc, {color: 'white'}]}>Sign Up</Text>
+        <Pressable onPress={() => navigation.navigate("register")}>
+          <Text style={[styles.desc, {color: 'white'}]}>Sign Up</Text>
+        </Pressable>
       </View>
+      <StatusBar style="auto" />
     </ImageBackground>
   );
 }
@@ -70,7 +121,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "white",
     borderRadius: 30,
-    width: 380,
+    width: '90%',
   },
   logo: {
     width: 130,
@@ -84,15 +135,16 @@ const styles = StyleSheet.create({
   submit: {
     borderRadius: 40,
     backgroundColor: "#a0acda",
-    width: 100,
-    paddingTop: 14,
-    paddingBottom: 14,
-    backgroundColor: "#a0acda",
-    marginLeft: 290,
+    width: 80,
+    paddingVertical: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: '70%',
+    marginTop: 10
   },
   submitText: {
     color: "#fff",
-    textAlign: "center",
+
   },
   control: {
     flexDirection: 'row',
