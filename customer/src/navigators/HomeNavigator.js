@@ -12,10 +12,25 @@ const Stack = createNativeStackNavigator();
 export default function HomeNavigator({ navigation, route }) {
   const tabHiddenRoutes = ["Driver", "Map"];
 
+  const style = {
+    paddingTop: 7,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    borderLeftWidth: 0.2,
+    borderRightWidth: 0.2,
+    position: "absolute",
+    overflow: "hidden",
+    height: 90,
+    elevation: 0,
+    shadowColor: "#000000",
+    borderTopWidth: 0,
+    display: "flex"
+  };
+
   if (tabHiddenRoutes.includes(getFocusedRouteNameFromRoute(route))) {
-    navigation.setOptions({tabBarStyle: {display: 'none'}});
+    navigation.setOptions({ tabBarStyle: { display: "none" } });
   } else {
-    navigation.setOptions({tabBarStyle: {display: 'flex'}});
+    navigation.setOptions({ tabBarStyle: style });
   }
 
   return (
@@ -23,22 +38,25 @@ export default function HomeNavigator({ navigation, route }) {
       <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+          
+        }}
       />
       <Stack.Screen
         name="Trip"
         component={TripScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name="Driver"
         component={DriverScreen}
-        options={{ headerShown: true }}
+        options={{headerShadowVisible: false}}
       />
       <Stack.Screen
         name="School"
         component={SchoolScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
     </Stack.Navigator>
   );
