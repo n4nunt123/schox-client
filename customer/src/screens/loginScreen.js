@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   control: {
     flexDirection: 'row',
-    marginTop: 230,
+    marginTop: 200,
     marginLeft: 70
   }
 });

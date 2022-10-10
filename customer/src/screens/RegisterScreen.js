@@ -14,19 +14,18 @@ import logo from "../../assets/logo1.png";
 
 export default function RegisterScreen() {
   const [registerForm, setRegisterForm] = useState({
-    name: '',
+    name: "",
     email: "",
     password: "",
     phoneNumber: "",
-    address: ""
-  })
+    address: "",
+  });
   return (
     <ImageBackground
       source={require("../../assets/background.png")}
       style={styles.container}
     >
       <Image source={logo} style={styles.logo} />
-      <Text style={styles.desc}>Please Sign in to continue</Text>
 
       <TextInput
         style={[styles.input, { marginTop: 50 }]}
@@ -58,7 +57,7 @@ export default function RegisterScreen() {
         value={registerForm.address}
         placeholder="Address"
       />
-      <TouchableHighlight style={styles.submit} underlayColor="#fff">
+      <TouchableHighlight style={styles.submit} onPress>
         <Text style={styles.submitText}>Register</Text>
       </TouchableHighlight>
 
@@ -66,7 +65,9 @@ export default function RegisterScreen() {
 
       <View style={styles.control}>
         <Text style={styles.desc}>Already have a account? </Text>
-        <Text style={[styles.desc, {color: 'white'}]}>Sign in</Text>
+        <TouchableHighlight onPress>
+          <Text style={[styles.desc, { color: "white" }]}>Sign in</Text>
+        </TouchableHighlight>
       </View>
     </ImageBackground>
   );
@@ -116,8 +117,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   control: {
-    flexDirection: 'row',
-    marginTop: 120,
-    marginLeft: 70
-  }
+    flexDirection: "row",
+    marginTop: 130,
+    marginLeft: 70,
+  },
 });

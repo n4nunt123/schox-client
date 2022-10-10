@@ -31,6 +31,7 @@ export default function App() {
             height: 90,
             elevation: 0,
             shadowColor: "#000000",
+            borderTopWidth: 0
           },
           tabBarIcon: ({ focused, color, size }) => (
             <Image
