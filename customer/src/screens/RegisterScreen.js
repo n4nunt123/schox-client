@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import logo from "../../assets/logo1.png";
 
+
 export default function RegisterScreen({navigation}) {
 
   const [fullName, setFullName] = useState("")
@@ -59,6 +60,7 @@ export default function RegisterScreen({navigation}) {
         value={address}
         placeholder="Address"
       />
+
       <TextInput
           style={styles.input}
           onChangeText={setChildrenName}
@@ -66,6 +68,7 @@ export default function RegisterScreen({navigation}) {
           placeholder="Your children name"
       />
       <TouchableHighlight style={styles.submit} underlayColor="#fff">
+
         <Text style={styles.submitText}>Register</Text>
       </TouchableHighlight>
 
@@ -124,8 +127,8 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   control: {
-    flexDirection: 'row',
-    marginTop: 120,
-    marginLeft: 70
-  }
+    flexDirection: "row",
+    marginTop: 130,
+    marginLeft: 70,
+  },
 });
