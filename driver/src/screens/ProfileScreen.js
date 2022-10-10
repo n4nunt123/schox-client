@@ -4,6 +4,8 @@ import {Picker} from '@react-native-picker/picker';
 import {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import {useFocusEffect} from "@react-navigation/native";
+import * as React from "react";
 
 export default function ProfileScreen({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
@@ -30,7 +32,7 @@ export default function ProfileScreen({ navigation }) {
     const detailDriver = async (id) => {
         try {
             const { data } = await axios({
-                url: "https://e152-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/drivers/" + id,
+                url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/drivers/" + id,
                 method: "GET"
             })
             setDetail(data)
@@ -38,9 +40,11 @@ export default function ProfileScreen({ navigation }) {
             console.log(e)
         }
     }
-    useEffect(() => {
-        getData()
-    }, []);
+    useFocusEffect(
+        React.useCallback(() => {
+            getData()
+        }, [])
+    )
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topCard}>

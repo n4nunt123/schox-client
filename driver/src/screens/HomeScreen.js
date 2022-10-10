@@ -2,10 +2,13 @@ import {ActivityIndicator, Image, Pressable, StyleSheet, Text, View} from "react
 import {SafeAreaView} from 'react-native-safe-area-context';
 import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
 import * as Location from 'expo-location';
-import {useEffect, useState} from "react";
+import { useState} from "react";
+import * as React from 'react';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useFocusEffect} from "@react-navigation/native";
 
+const mapRef = React.createRef();
 export default function HomeScreen({navigation, route}) {
     const [origin, setOrigin] = useState({
         longitude: 0,
@@ -19,7 +22,6 @@ export default function HomeScreen({navigation, route}) {
             if (status !== 'granted') {
                 return;
             }
-
             let location = await Location.getCurrentPositionAsync({
                 accuracy: Location.Accuracy.Balanced,
                 enableHighAccuracy: true,
@@ -42,7 +44,7 @@ export default function HomeScreen({navigation, route}) {
     const detailDriver = async (id) => {
         try {
             const { data } = await axios({
-                url: "https://e152-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/drivers/" + id,
+                url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/drivers/" + id,
                 method: "GET"
             })
             setDetail(data)
@@ -50,10 +52,14 @@ export default function HomeScreen({navigation, route}) {
             console.log(e)
         }
     }
-    useEffect(() => {
-        getData()
-            .then(() => getLocation())
-    }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            getData()
+                .then(() => getLocation())
+                .then(() => mapRef.current.animateCamera({center: {"latitude":origin.latitude, "longitude": origin.longitude}}))
+        }, [])
+    )
 
     return (
         <SafeAreaView style={styles.container}>
@@ -71,7 +77,7 @@ export default function HomeScreen({navigation, route}) {
                 </View>
             </Pressable>
             <View style={styles.bottomCard}>
-                <MapView style={styles.map} provider={PROVIDER_GOOGLE} showsUserLocation={true} zoomControlEnabled={true} >
+                <MapView ref={mapRef} style={styles.map} provider={PROVIDER_GOOGLE} showsUserLocation={true} zoomControlEnabled={true} >
                     <Marker
                         coordinate={{latitude: origin.latitude,
                             longitude: origin.longitude}}
