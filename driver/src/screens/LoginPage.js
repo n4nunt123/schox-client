@@ -8,7 +8,7 @@ import {
     StyleSheet,
     TouchableHighlight,
     Alert,
-    BackHandler
+    BackHandler,
 } from "react-native";
 import {useEffect, useState} from "react";
 import axios from "axios";
@@ -37,7 +37,7 @@ export default function Login({navigation}) {
     const login = async () => {
         try {
             const { data } = await axios({
-                url: "https://e152-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/drivers/login",
+                url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/drivers/login",
                 method: "POST",
                 data: {email, password}
             })
@@ -74,7 +74,7 @@ export default function Login({navigation}) {
             <View style={styles.card}>
                 <Image source={require("../../assets/logo.png")} style={styles.logo} />
                 <TextInput style={styles.input} onChangeText={setEmail} value={email} />
-                <TextInput style={styles.input} onChangeText={setPassword} value={password} />
+                <TextInput style={styles.input} onChangeText={setPassword} value={password} secureTextEntry={true} />
                 <TouchableHighlight onPress={() => login()} style={styles.button}>
                     <Text>Login</Text>
                 </TouchableHighlight>

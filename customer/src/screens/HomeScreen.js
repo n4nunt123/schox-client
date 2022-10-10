@@ -2,7 +2,6 @@ import { color } from "@rneui/base";
 import {Button, Image, Pressable, ScrollView, StyleSheet, Text, TouchableHighlight, View} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 
-
 export default function HomeScreen({navigation}) {
     // pake conditional rendering
     // return (
@@ -37,7 +36,7 @@ export default function HomeScreen({navigation}) {
                 </View>
                 <View style={{flex: 4, flexDirection: "column"}}>
                     <Text style={{fontSize: 22, fontWeight: 'bold', color: '#2b377e'}}>Hello, User</Text>
-                    <Text style={{color: "#a7a8c1"}}>Saturday, 8 October 2022</Text>
+                    <Text style={{color: "#a7a8c1"}}>10 October 2022</Text>
                 </View>
             </View>
             <Pressable onPress={() => navigation.navigate('Trip')} style={styles.containerChild}>
