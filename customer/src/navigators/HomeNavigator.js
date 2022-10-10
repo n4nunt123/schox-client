@@ -47,7 +47,7 @@ export default function HomeNavigator({ navigation, route }) {
       <Stack.Screen
         name="School"
         component={SchoolScreen}
-        options={{ headerShown: false }}
+        options={{headerShadowVisible: false}}
       />
     </Stack.Navigator>
   );
