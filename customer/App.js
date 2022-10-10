@@ -11,20 +11,6 @@ import ProfileNavigator from "./src/navigators/ProfileNavigator";
 
 const Tab = createBottomTabNavigator();
 
-const style = {
-  paddingTop: 7,
-  borderTopLeftRadius: 24,
-  borderTopRightRadius: 24,
-  borderLeftWidth: 0.2,
-  borderRightWidth: 0.2,
-  position: "absolute",
-  overflow: "hidden",
-  height: 90,
-  elevation: 0,
-  shadowColor: "#000000",
-  borderTopWidth: 0,
-};
-
 export default function App() {
   return (
     <NavigationContainer>
@@ -34,7 +20,18 @@ export default function App() {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarLabel: "Home",
-          tabBarStyle: style,
+          tabBarStyle: {
+            paddingTop: 7,
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+            borderLeftWidth: 0.2,
+            borderRightWidth: 0.2,
+            position: "absolute",
+            overflow: "hidden",
+            height: 90,
+            elevation: 0,
+            shadowColor: "#000000",
+          },
           tabBarIcon: ({ focused, color, size }) => (
             <Image
               source={
