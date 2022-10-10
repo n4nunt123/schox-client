@@ -1,5 +1,6 @@
 import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { StyleSheet } from 'react-native';
+import { getFocusedRouteNameFromRoute, NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import { Feather } from "@expo/vector-icons";
 
@@ -60,10 +61,46 @@ export default function App() {
           ),
         })}
       >
-        <Tab.Screen name="Home" component={HomeNavigator} />
+        <Tab.Screen 
+          name="Home" 
+          component={HomeNavigator}
+          options={({ route }) => ({
+            tabBarStyle: (route => {
+            const routeName = getFocusedRouteNameFromRoute(route)
+              switch (routeName) {
+                case 'Trip':
+                case 'Driver':
+                case 'School':
+                  return styles.hideTabStyles
+                default:
+                  return styles.showTabStyles
+              }
+            })(route),
+          })}
+        />
         <Tab.Screen name="Subscription" component={SubscriptionNavigator} />
         <Tab.Screen name="Profile" component={ProfileNavigator} />
       </Tab.Navigator>
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  showTabStyles: {
+    paddingTop: 7,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    borderLeftWidth: 0.2,
+    borderRightWidth: 0.2,
+    position: "absolute",
+    overflow: "hidden",
+    height: 90,
+    elevation: 0,
+    shadowColor: "#000000",
+    display: "flex"
+  },
+  hideTabStyles: {
+    display: "none"
+  }
+})
+
