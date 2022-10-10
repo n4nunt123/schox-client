@@ -6,33 +6,19 @@ import HomeScreen from "../screens/HomeScreen";
 import TripScreen from "../screens/TripScreen";
 import DriverScreen from "../screens/DriverScreen";
 import SchoolScreen from "../screens/SchoolScreen";
+import LoginScreen from "../screens/loginScreen";
 
 const Stack = createNativeStackNavigator();
 
 export default function HomeNavigator({ navigation, route }) {
-  const tabHiddenRoutes = ["Driver", "Map"];
-
-  const style = {
-    paddingTop: 7,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    borderLeftWidth: 0.2,
-    borderRightWidth: 0.2,
-    position: "absolute",
-    overflow: "hidden",
-    height: 90,
-    elevation: 0,
-    shadowColor: "#000000",
-    borderTopWidth: 0,
-    display: "flex"
-  };
-
-  if (tabHiddenRoutes.includes(getFocusedRouteNameFromRoute(route))) {
-    navigation.setOptions({ tabBarStyle: { display: "none" } });
-  } else {
-    navigation.setOptions({ tabBarStyle: style });
-  }
-
+  React.useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    if (routeName === "Driver" || routeName === "Login") {
+      navigation.setOptions({ tabBarVisible: false });
+    } else {
+      navigation.setOptions({ tabBarVisible: true });
+    }
+  }, [navigation, route]);
   return (
     <Stack.Navigator initialRouteName="HomeScreen">
       <Stack.Screen
@@ -40,7 +26,6 @@ export default function HomeNavigator({ navigation, route }) {
         component={HomeScreen}
         options={{
           headerShown: false,
-          
         }}
       />
       <Stack.Screen
@@ -51,10 +36,10 @@ export default function HomeNavigator({ navigation, route }) {
       <Stack.Screen
         name="Driver"
         component={DriverScreen}
-        options={{headerShadowVisible: false}}
+        options={{ headerShown: false }}
         onPress={() =>
           props.navigation.setOptions({
-          tabBarVisible: true
+            tabBarVisible: true,
           })
         }
       />
