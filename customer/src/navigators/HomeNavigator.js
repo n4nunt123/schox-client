@@ -28,22 +28,17 @@ export default function HomeNavigator({ navigation, route }) {
       <Stack.Screen
         name="Trip"
         component={TripScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name="Driver"
         component={DriverScreen}
         options={{ headerShown: true }}
-        onPress={() =>
-          props.navigation.setOptions({
-          tabBarVisible: true
-          })
-        }
       />
       <Stack.Screen
         name="School"
         component={SchoolScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
     </Stack.Navigator>
   );
