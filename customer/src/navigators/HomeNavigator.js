@@ -6,7 +6,7 @@ import HomeScreen from "../screens/HomeScreen";
 import TripScreen from "../screens/TripScreen";
 import DriverScreen from "../screens/DriverScreen";
 import SchoolScreen from "../screens/SchoolScreen";
-import LoginScreen from "../screens/loginScreen";
+import RegisterScreen from "../screens/RegisterScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,7 +35,7 @@ export default function HomeNavigator({ navigation, route }) {
       />
       <Stack.Screen
         name="Driver"
-        component={DriverScreen}
+        component={RegisterScreen}
         options={{ headerShown: false }}
         onPress={() =>
           props.navigation.setOptions({
