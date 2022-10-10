@@ -9,65 +9,71 @@ import HomeNavigator from "./src/navigators/HomeNavigator";
 import SubscriptionNavigator from "./src/navigators/SubNavigator";
 import ProfileNavigator from "./src/navigators/ProfileNavigator";
 
+import { Provider } from "react-redux";
+import store from './src/store/store'
+
+
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName="Home"
-        screenOptions={({ route }) => ({
-          headerShown: false,
-          tabBarShowLabel: false,
-          tabBarLabel: "Home",
-          tabBarStyle: styles.showTabStyles,
-          tabBarIcon: ({ focused, color, size }) => (
-            <Image
-              source={
-                route.name == "Home"
-                  ? focused
-                    ? require("./assets/icon/homeIcon1.png")
-                    : require("./assets/icon/homeIcon2.png")
-                  : route.name == "Profile"
-                  ? focused
-                    ? require("./assets/icon/subsIcon1.png")
-                    : require("./assets/icon/subsIcon2.png")
-                  : route.name == "Subscription"
-                  ? focused
-                    ? require("./assets/icon/profIcon1.png")
-                    : require("./assets/icon/profIcon2.png")
-                  : ""
-              }
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: size,
-              }}
-            />
-          ),
-        })}
-      >
-        <Tab.Screen 
-          name="Home" 
-          component={HomeNavigator}
-          options={({ route }) => ({
-            tabBarStyle: (route => {
-            const routeName = getFocusedRouteNameFromRoute(route)
-              switch (routeName) {
-                case 'Trip':
-                case 'Driver':
-                case 'School':
-                  return styles.hideTabStyles
-                default:
-                  return styles.showTabStyles
-              }
-            })(route),
+    <Provider store={store}>
+      <NavigationContainer>
+        <Tab.Navigator
+          initialRouteName="Home"
+          screenOptions={({ route }) => ({
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarLabel: "Home",
+            tabBarStyle: styles.showTabStyles,
+            tabBarIcon: ({ focused, color, size }) => (
+              <Image
+                source={
+                  route.name == "Home"
+                    ? focused
+                      ? require("./assets/icon/homeIcon1.png")
+                      : require("./assets/icon/homeIcon2.png")
+                    : route.name == "Profile"
+                    ? focused
+                      ? require("./assets/icon/subsIcon1.png")
+                      : require("./assets/icon/subsIcon2.png")
+                    : route.name == "Subscription"
+                    ? focused
+                      ? require("./assets/icon/profIcon1.png")
+                      : require("./assets/icon/profIcon2.png")
+                    : ""
+                }
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: size,
+                }}
+              />
+            ),
           })}
-        />
-        <Tab.Screen name="Subscription" component={SubscriptionNavigator} />
-        <Tab.Screen name="Profile" component={ProfileNavigator} />
-      </Tab.Navigator>
-    </NavigationContainer>
+        >
+          <Tab.Screen 
+            name="Home" 
+            component={HomeNavigator}
+            options={({ route }) => ({
+              tabBarStyle: (route => {
+              const routeName = getFocusedRouteNameFromRoute(route)
+                switch (routeName) {
+                  case 'Trip':
+                  case 'Driver':
+                  case 'School':
+                    return styles.hideTabStyles
+                  default:
+                    return styles.showTabStyles
+                }
+              })(route),
+            })}
+          />
+          <Tab.Screen name="Subscription" component={SubscriptionNavigator} />
+          <Tab.Screen name="Profile" component={ProfileNavigator} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 
