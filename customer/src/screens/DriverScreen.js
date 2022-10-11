@@ -11,7 +11,7 @@ import axios from "axios";
 import {baseUrl} from "../constants/baseUrl";
 import {useFocusEffect} from "@react-navigation/native";
 
-export default function DriverScreen() {
+export default function DriverScreen({navigation}) {
   const [driver, setDriver] = useState({})
   const getData = async () => {
     try {

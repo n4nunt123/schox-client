@@ -55,7 +55,7 @@ export default function HomeScreen({navigation}) {
                 <View style={styles.userView}>
 
                     <View style={{marginStart: 15}}>
-                        <Text style={styles.hallo}>Hello, {detail.fullName}!</Text>
+                        <Text style={styles.hallo}>Hello, {detail?.fullName}!</Text>
                         <Text style={styles.date}>{date}</Text>
                     </View>
                 </View>
