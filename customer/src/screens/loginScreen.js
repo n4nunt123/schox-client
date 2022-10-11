@@ -46,7 +46,6 @@ export default function LoginScreen({ navigation }) {
       await storeData({id: data.id, access_token: data.access_token})
       navigation.navigate({
         name: "Home",
-        params: {id: data.id, access_token: data.access_token}
       })
     } catch (e) {
       console.log(e);

@@ -17,9 +17,11 @@ import axios from "axios";
 import {useFocusEffect} from "@react-navigation/native";
 import * as React from "react";
 import {baseUrl} from "../constants/baseUrl";
+import moment from "moment/moment";
 
 export default function ProfilePage({ navigation }) {
   const [detail, setDetail] = useState({})
+  const date = moment(detail.Subscription?.endDate).format('MMMM D, YYYY')
 
   const getData = async () => {
     try {
@@ -37,7 +39,7 @@ export default function ProfilePage({ navigation }) {
         method: "GET",
         headers: { access_token: token }
       })
-      setDetail(data)
+      setDetail(data.user)
     } catch (e) {
       console.log(e)
     }
@@ -78,7 +80,7 @@ export default function ProfilePage({ navigation }) {
         {!detail.SubscriptionId ? <View style={styles.containerSubsTime}>
           <Text style={styles.infoText}>No subscription</Text>
         </View> : <View style={styles.containerSubsTime}>
-          <Text style={styles.infoText}>3 November 2022</Text>
+          <Text style={styles.infoText}>{date}</Text>
           <Text style={styles.infoMoney}>End Date</Text>
         </View>}
       </View>
