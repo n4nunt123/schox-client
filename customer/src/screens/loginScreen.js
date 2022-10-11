@@ -14,26 +14,26 @@ import logo from "../../assets/logo1.png";
 import axios from "axios";
 import {baseUrl} from "../constants/baseUrl";
 
-export default function LoginScreen({navigation}) {
+export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const storeData = async (value) => {
     try {
-      const jsonValue = JSON.stringify(value)
-      await AsyncStorage.setItem('@storage_Key', jsonValue)
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem("@storage_Key", jsonValue);
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-  }
+  };
   const getData = async () => {
     try {
-      const jsonValue = await AsyncStorage.getItem('@storage_Key')
+      const jsonValue = await AsyncStorage.getItem("@storage_Key");
       return jsonValue != null ? navigation.navigate("Home") : null;
-    } catch(e) {
-      console.log(e)
+    } catch (e) {
+      console.log(e);
     }
-  }
+  };
 
   const login = async () => {
     try {
@@ -49,27 +49,28 @@ export default function LoginScreen({navigation}) {
         params: {id: data.id, access_token: data.access_token}
       })
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-  }
+  };
 
   const backAction = () => {
     Alert.alert("Hold on!", "Are you sure you want to exit the app?", [
       {
         text: "Cancel",
         onPress: () => null,
-        style: "cancel"
+        style: "cancel",
       },
-      { text: "YES", onPress: () => BackHandler.exitApp() }
+      { text: "YES", onPress: () => BackHandler.exitApp() },
     ]);
     return true;
   };
 
   useEffect(() => {
-    getData()
+    getData();
     BackHandler.addEventListener("hardwareBackPress", backAction);
-    return () => BackHandler.removeEventListener("hardwareBackPress", backAction);
-  }, [])
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, []);
   return (
     <ImageBackground
       source={require("../../assets/background.png")}
@@ -91,14 +92,18 @@ export default function LoginScreen({navigation}) {
         placeholder="Password"
         secureTextEntry={true}
       />
-      <TouchableHighlight onPress={() => login()} style={styles.submit} underlayColor="#fff">
+      <TouchableHighlight
+        onPress={() => login()}
+        style={styles.submit}
+        underlayColor="#fff"
+      >
         <Text style={styles.submitText}>Login</Text>
       </TouchableHighlight>
 
       <View style={styles.control}>
         <Text style={styles.desc}>Don't have an account? </Text>
         <Pressable onPress={() => navigation.navigate("register")}>
-          <Text style={[styles.desc, {color: 'white'}]}>Sign Up</Text>
+          <Text style={[styles.desc, { color: "white" }]}>Sign Up</Text>
         </Pressable>
       </View>
       <StatusBar style="auto" />
@@ -125,7 +130,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "white",
     borderRadius: 30,
-    width: '90%',
+    width: "90%",
   },
   logo: {
     width: 130,
@@ -143,16 +148,15 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: '70%',
-    marginTop: 10
+    marginHorizontal: "70%",
+    marginTop: 10,
   },
   submitText: {
     color: "#fff",
-
   },
   control: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 200,
-    marginLeft: 70
-  }
+    marginLeft: 70,
+  },
 });

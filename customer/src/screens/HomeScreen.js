@@ -1,13 +1,15 @@
 import {
-    Image,
-    Pressable,
-    StyleSheet,
-    Text,
-    TouchableHighlight,
-    View
+  Button,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
 } from "react-native";
-import {SafeAreaView} from "react-native-safe-area-context";
-import {useState} from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useState } from "react";
 import * as React from "react";
 import axios from "axios";
 import {useFocusEffect} from "@react-navigation/native";
@@ -41,11 +43,11 @@ export default function HomeScreen({navigation}) {
         }
     }
 
-    useFocusEffect(
-        React.useCallback(() => {
-            getData()
-        }, [])
-    )
+  useFocusEffect(
+    React.useCallback(() => {
+      getData();
+    }, [])
+  );
 
     if (!detail?.SubscriptionId) {
         return (
@@ -98,7 +100,8 @@ export default function HomeScreen({navigation}) {
             </SafeAreaView>
         )
     }
-}
+  }
+
 
 const styles = StyleSheet.create({
     container: {
