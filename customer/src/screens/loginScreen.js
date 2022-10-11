@@ -6,11 +6,13 @@ import {
   ImageBackground,
   Image,
   TouchableHighlight,
-  View, Alert, BackHandler, Pressable, AsyncStorage,
+  View, Alert, BackHandler, Pressable,
 } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useEffect, useState} from "react";
 import logo from "../../assets/logo1.png";
 import axios from "axios";
+import {baseUrl} from "../constants/baseUrl";
 
 export default function LoginScreen({navigation}) {
   const [email, setEmail] = useState("");
@@ -36,14 +38,15 @@ export default function LoginScreen({navigation}) {
   const login = async () => {
     try {
       const { data } = await axios({
-        url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/users/login",
+        url: baseUrl + "/users/login",
         method: "POST",
         data: {email, password}
       })
-      await storeData({id: data.id})
+
+      await storeData({id: data.id, access_token: data.access_token})
       navigation.navigate({
         name: "Home",
-        // params: {id: data.id}
+        params: {id: data.id, access_token: data.access_token}
       })
     } catch (e) {
       console.log(e)
@@ -86,6 +89,7 @@ export default function LoginScreen({navigation}) {
         onChangeText={setPassword}
         value={password}
         placeholder="Password"
+        secureTextEntry={true}
       />
       <TouchableHighlight onPress={() => login()} style={styles.submit} underlayColor="#fff">
         <Text style={styles.submitText}>Login</Text>

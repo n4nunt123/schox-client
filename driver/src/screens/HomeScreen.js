@@ -1,4 +1,4 @@
-import {ActivityIndicator, Image, Pressable, StyleSheet, Text, View} from "react-native";
+import { Image, Pressable, StyleSheet, Text, View} from "react-native";
 import {SafeAreaView} from 'react-native-safe-area-context';
 import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
 import * as Location from 'expo-location';
@@ -7,6 +7,7 @@ import * as React from 'react';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useFocusEffect} from "@react-navigation/native";
+import {baseUrl} from "../constants/baseUrl";
 
 const mapRef = React.createRef();
 export default function HomeScreen({navigation, route}) {
@@ -37,6 +38,7 @@ export default function HomeScreen({navigation, route}) {
             const jsonValue = await AsyncStorage.getItem('@storage_Key')
             let value = JSON.parse(jsonValue)
             await detailDriver(value?.id)
+            await mapRef.current.animateCamera({center: {"latitude":origin.latitude, "longitude": origin.longitude}})
         } catch(e) {
             console.log(e)
         }
@@ -44,7 +46,7 @@ export default function HomeScreen({navigation, route}) {
     const detailDriver = async (id) => {
         try {
             const { data } = await axios({
-                url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/drivers/" + id,
+                url: baseUrl + "/drivers/" + id,
                 method: "GET"
             })
             setDetail(data)
@@ -57,7 +59,6 @@ export default function HomeScreen({navigation, route}) {
         React.useCallback(() => {
             getData()
                 .then(() => getLocation())
-                .then(() => mapRef.current.animateCamera({center: {"latitude":origin.latitude, "longitude": origin.longitude}}))
         }, [])
     )
 

@@ -1,10 +1,6 @@
-import { color } from "@rneui/base";
 import {
-    AsyncStorage,
-    Button,
     Image,
     Pressable,
-    ScrollView,
     StyleSheet,
     Text,
     TouchableHighlight,
@@ -16,24 +12,28 @@ import * as React from "react";
 import axios from "axios";
 import {useFocusEffect} from "@react-navigation/native";
 import {StatusBar} from "expo-status-bar";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from "moment";
+import {baseUrl} from "../constants/baseUrl";
 
 export default function HomeScreen({navigation}) {
+    const date = moment().format('MMMM D, YYYY')
     const [detail, setDetail] = useState({})
-
     const getData = async () => {
         try {
             const jsonValue = await AsyncStorage.getItem('@storage_Key')
             let value = JSON.parse(jsonValue)
-            await detailCustomer(value?.id)
+            await detailCustomer(value?.id, value?.access_token)
         } catch(e) {
             console.log(e)
         }
     }
-    const detailCustomer = async (id) => {
+    const detailCustomer = async (id, token) => {
         try {
             const { data } = await axios({
-                url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/users/" + id,
-                method: "GET"
+                url: baseUrl + "/users/" + id,
+                method: "GET",
+                headers: { access_token: token }
             })
             setDetail(data)
         } catch (e) {
@@ -54,14 +54,14 @@ export default function HomeScreen({navigation}) {
 
                     <View style={{marginStart: 15}}>
                         <Text style={styles.hallo}>Hello, {detail.fullName}!</Text>
-                        <Text style={styles.date}>Kamis, 21 Januari 2022</Text>
+                        <Text style={styles.date}>{date}</Text>
                     </View>
                 </View>
                 <View style={styles.mainCard}>
                     <View style={styles.infoView}>
                         <Text style={styles.infoText}>Kamu belum{"\n"}ada subscription</Text>
                     </View>
-                    <TouchableHighlight onPress={() => navigation.navigate("SubcriptionScreen")}>
+                    <TouchableHighlight onPress={() => navigation.navigate("Subscription")}>
                         <Text style={styles.subsText}>Subscribe Now</Text>
                     </TouchableHighlight>
                 </View>
@@ -156,9 +156,12 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     subsText: {
-        color: '#2B377F',
+        color: 'white',
         fontWeight: '600',
         fontSize: 17,
+        backgroundColor: "#2B377F",
+        borderRadius: 30,
+        padding: 20
     },
     topChild: {
         flex: 0.6,

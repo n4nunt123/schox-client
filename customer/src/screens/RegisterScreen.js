@@ -8,7 +8,6 @@ import {
   TouchableHighlight,
   View, Pressable,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import logo from "../../assets/logo1.png";
 
@@ -21,7 +20,8 @@ export default function RegisterScreen({navigation}) {
   const [phoneNumber, setPhoneNumber] = useState("")
   const [address, setAddress] = useState("")
   const [childrenName, setChildrenName] = useState("")
-  const [houseCoordinate, setHouseCoordinate] = useState("")
+  const [latitude, setLatitude] = useState("")
+  const [longitude, setLongitude] = useState("")
 
   return (
     <ImageBackground

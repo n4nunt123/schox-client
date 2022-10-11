@@ -24,7 +24,7 @@ export default function TopUp({ navigation }) {
         const order = `${id}--testing`;
 
         const { data } = await axios({
-          url: "https://23e3-202-80-215-137.ap.ngrok.io" + "/users/balances",
+          url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io" + "/users/balances",
           method: "post",
           data: {
             order: order,
@@ -52,7 +52,7 @@ export default function TopUp({ navigation }) {
         keyboardType="numeric"
       />
       <StatusBar style="auto" />
-      <TouchableOpacity t onPress={onSubmit(value)}>
+      <TouchableOpacity onPress={onSubmit(value)}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>Continue</Text>
         </View>
