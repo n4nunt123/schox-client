@@ -1,1 +1,1 @@
-export const baseUrl = "https://e8f5-125-160-222-239.ap.ngrok.io"
+export const baseUrl = "http://192.168.1.12:3000" // ini IP local, hapus aja ganti ngrok/local punya kalian

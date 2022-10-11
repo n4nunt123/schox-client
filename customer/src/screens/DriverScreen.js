@@ -6,7 +6,6 @@ import profile from "../../assets/icon/SeekPng.com_profile-icon-png_9665493.png"
 import arrow from "../../assets/icon/arrow.png";
 import dot from "../../assets/icon/dot.png";
 import arrive from "../../assets/icon/arrive.png";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import {baseUrl} from "../constants/baseUrl";
@@ -108,7 +107,7 @@ export default function DriverScreen() {
         </View>
       </View>
 
-      <Pressable style={styles.control}>
+      <Pressable style={styles.control} onPress={() => navigation.navigate('Chat')}>
         <View style={styles.chatBox}>
           <Text style={styles.chat}>CHAT</Text>
         </View>
