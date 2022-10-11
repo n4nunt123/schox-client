@@ -13,22 +13,26 @@ export default function ProfileScreen() {
   })
 
   useEffect(() => {
-    (async () => {
-      
+    getLocation()
+  }, [coordinate]);
+
+  const getLocation = async() => {
+    try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
+          return;
       }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setCoordinate(location);
-    })();
-  }, []);
-
-  useEffect(() => {
-    console.log(coordinate)
-  }, [coordinate])
+      let location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+          enableHighAccuracy: true,
+          timeInterval: 5
+      });
+      setCoordinate({longitude: location.coords.longitude, latitude: location.coords.latitude});
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   const sendInterval = async () => {
     socketInstance.emit('send:interval', coordinate)
@@ -51,6 +55,10 @@ export default function ProfileScreen() {
       <Button 
         title="Start Trip"
         onPress={start}
+      />
+      <Button 
+        title="Stop Trip"
+        onPress={stop}
       />
     </SafeAreaView>
   )

@@ -19,14 +19,12 @@ import moment from "moment";
 import {baseUrl} from "../constants/baseUrl";
 
 export default function HomeScreen({navigation}) {
-
     const date = moment().format('MMMM D, YYYY')
     const [detail, setDetail] = useState({})
     const getData = async () => {
         try {
             const jsonValue = await AsyncStorage.getItem('@storage_Key')
             let value = JSON.parse(jsonValue)
-            console.log(value)
             await detailCustomer(value?.id, value?.access_token)
         } catch(e) {
             console.log(e)
