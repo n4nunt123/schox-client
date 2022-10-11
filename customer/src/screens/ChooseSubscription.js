@@ -1,71 +1,121 @@
-import {View, Text, Button, StyleSheet, TouchableHighlight, Image} from "react-native";
-import { useState } from "react";
+import {Alert, Image, StyleSheet, Text, TouchableHighlight, View} from "react-native";
+import * as React from "react";
+import {useState} from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import {useFocusEffect} from "@react-navigation/native";
 
-export default function SubscriptionScreen({ navigation }) {
-  const [flag, useFlag] = useState(false)
+export default function SubscriptionScreen({navigation}) {
+    const [flag, useFlag] = useState(false)
+    const [detail, setDetail] = useState({})
 
-  const weekly = () => {
-    useFlag(true)
-  }
+    const getData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            let value = JSON.parse(jsonValue)
+            await detailCustomer(value?.id, value?.access_token)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    const detailCustomer = async (id, token) => {
+        try {
+            const {data} = await axios({
+                url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/users/" + id,
+                method: "GET",
+                headers: {access_token: token}
+            })
+            setDetail(data)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    const weekly = () => {
+        useFlag(true)
+    }
+    const monthly = () => {
+        useFlag(false)
+    }
+    const renderWeekly = () => {
+        return (
+            <View style={{alignItems: "center", justifyContent: "center"}}>
+                <View style={styles.price}>
+                    <Text style={styles.rp}>Rp</Text>
+                    <Text style={{fontSize: 32, fontWeight: "bold", color: '#212a72'}}>300.000</Text>
+                    <Text style={styles.time}>/week</Text>
+                </View>
+                <Image style={{width: 200, height: 200, marginVertical: 20}}
+                       source={require("../../assets/icon/Subscribe.png")}/>
+                <TouchableHighlight style={styles.subs} onPress={() => {
+                    if (detail.balance < 300000) {
+                        Alert.alert("Opps!", "Your balance is insufficient");
+                        navigation.navigate('Profile')
+                    } else {
+                        // logic ngurangin balance
+                    }
+                }}>
+                    <Text style={{color: "white", fontSize: 14}}>Subscribe Now</Text>
+                </TouchableHighlight>
+            </View>
+        )
+    }
+    const renderMonthly = () => {
+        return (
+            <View style={{alignItems: "center", justifyContent: "center"}}>
+                <View style={[styles.price]}>
+                    <Text style={styles.rp}>Rp</Text>
+                    <Text style={{fontSize: 32, fontWeight: "bold", color: '#212a72'}}>1.000.000</Text>
+                    <Text style={styles.time}>/month</Text>
+                </View>
+                <Image style={{width: 200, height: 200, marginVertical: 20}}
+                       source={require("../../assets/icon/Subscribe.png")}/>
+                <TouchableHighlight style={styles.subs} onPress={() => {
+                    if (detail.balance < 1000000) {
+                        Alert.alert("Opps!", "Your balance is insufficient");
+                        navigation.navigate('Profile')
+                    } else {
+                        // logic ngurangin balance
+                    }
+                }}>
+                    <Text style={{color: "white", fontSize: 14, fontWeight: 'bold'}}>Subscribe Now</Text>
+                </TouchableHighlight>
+            </View>
+        )
+    }
 
-  const monthly = () => {
-    useFlag(false)
-  }
-
-  const renderWeekly = () => {
+    useFocusEffect(
+        React.useCallback(() => {
+            getData()
+        }, [])
+    )
     return (
-        <View style={{alignItems: "center", justifyContent: "center"}}>
-          <View style={styles.price}>
-              <Text style={styles.rp}>Rp</Text>
-              <Text style={{fontSize: 32, fontWeight: "bold", color: '#212a72'}}>300.000</Text>
-              <Text style={styles.time}>/week</Text>
-          </View>
-            <Image style={{width: 200, height: 200, marginVertical: 20}} source={require("../../assets/icon/Subscribe.png")} />
-            <TouchableHighlight style={styles.subs} onPress={() => navigation.navigate('Profile')}>
-                <Text style={{color: "white", fontSize: 14}}>Subscribe Now</Text>
-            </TouchableHighlight>
+        <View style={styles.top}>
+            <Text style={{
+                color: "white",
+                fontSize: 28,
+                paddingTop: 50,
+                fontWeight: "bold",
+                marginLeft: 15
+            }}>Subscription</Text>
+            <View style={styles.container}>
+                <View style={{flexDirection: 'row', marginBottom: 20}}>
+                    <TouchableHighlight style={styles.subtype} onPress={weekly}>
+                        <Text style={{color: "white", fontSize: 20}}>Weekly</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight style={styles.subtype} onPress={monthly}>
+                        <Text style={{color: "white", fontSize: 20}}>Monthly</Text>
+                    </TouchableHighlight>
+                </View>
+                <View style={{flex: 1}}>
+                    {flag ? renderWeekly() : renderMonthly()}
+                </View>
+            </View>
         </View>
     )
-  }
-
-  const renderMonthly = () => {
-    return (
-        <View style={{alignItems: "center", justifyContent: "center"}}>
-            <View style={[styles.price]}>
-              <Text style={styles.rp}>Rp</Text>
-              <Text style={{fontSize: 32, fontWeight: "bold", color: '#212a72'}}>1.000.000</Text>
-              <Text style={styles.time}>/month</Text>
-            </View>
-            <Image style={{width: 200, height: 200, marginVertical: 20}} source={require("../../assets/icon/Subscribe.png")} />
-            <TouchableHighlight style={styles.subs} onPress={() => navigation.navigate('Profile')}>
-                <Text style={{color: "white", fontSize: 14, fontWeight: 'bold'}}>Subscribe Now</Text>
-            </TouchableHighlight>
-        </View>
-  )
-  }
-
-  return (
-    <View style={styles.top}>
-        <Text style={{color: "white", fontSize: 28, paddingTop: 50, fontWeight: "bold", marginLeft: 15}}>Subscription</Text>
-        <View style={styles.container}>
-            <View style={{ flexDirection: 'row', marginBottom: 20 }}>
-                <TouchableHighlight style={styles.subtype} onPress={weekly}>
-                    <Text style={{color: "white", fontSize: 20}}>Weekly</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.subtype} onPress={monthly}>
-                    <Text style={{color: "white", fontSize: 20}}>Monthly</Text>
-                </TouchableHighlight>
-            </View>
-            <View style={{ flex: 1}}>
-                {flag ? renderWeekly() : renderMonthly()}
-            </View>
-        </View>
-    </View>
-  )
 }
 
 const styles = StyleSheet.create({
-    top: { flex: 1, backgroundColor: "#2b377e" },
+    top: {flex: 1, backgroundColor: "#2b377e"},
     container: {
         flex: 1,
         alignItems: "center",

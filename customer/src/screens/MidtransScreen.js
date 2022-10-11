@@ -1,18 +1,18 @@
 import { StyleSheet, Text, View, Button } from "react-native";
 import { WebView } from "react-native-webview";
 
-export default function Home({ navigation, route }) {
+export default function MidtransScreen({ navigation, route }) {
   const { url } = route.params;
 
   return (
     <WebView
       style={styles.container}
       source={{ uri: url }}
-      // onNavigationStateChange={(navState) => {
-      //   if (navState.url.includes("success")) {
-      //     navigation.goBack();
-      //   }
-      // }}
+      onNavigationStateChange={(navState) => {
+        if (navState.url.includes("success")) {
+          navigation.goBack();
+        }
+      }}
     />
   );
 }

@@ -1,7 +1,8 @@
 import * as React from "react";
-import {AsyncStorage, StyleSheet} from 'react-native';
+import { StyleSheet} from 'react-native';
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Image } from "react-native";
 import HomeNavigator from "./HomeNavigator";

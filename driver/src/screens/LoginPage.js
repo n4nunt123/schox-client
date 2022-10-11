@@ -13,6 +13,7 @@ import {
 import {useEffect, useState} from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {baseUrl} from "../constants/baseUrl";
 
 export default function Login({navigation}) {
     const [email, setEmail] = useState("");
@@ -37,7 +38,7 @@ export default function Login({navigation}) {
     const login = async () => {
         try {
             const { data } = await axios({
-                url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/drivers/login",
+                url: baseUrl + "/drivers/login",
                 method: "POST",
                 data: {email, password}
             })
@@ -73,8 +74,8 @@ export default function Login({navigation}) {
         <SafeAreaView style={styles.container}>
             <View style={styles.card}>
                 <Image source={require("../../assets/logo.png")} style={styles.logo} />
-                <TextInput style={styles.input} onChangeText={setEmail} value={email} />
-                <TextInput style={styles.input} onChangeText={setPassword} value={password} secureTextEntry={true} />
+                <TextInput style={styles.input} onChangeText={setEmail} value={email} placeholder="Email" />
+                <TextInput style={styles.input} onChangeText={setPassword} value={password} placeholder="Password" secureTextEntry={true} />
                 <TouchableHighlight onPress={() => login()} style={styles.button}>
                     <Text>Login</Text>
                 </TouchableHighlight>

@@ -6,15 +6,13 @@ import {
   ImageBackground,
   Image,
   TouchableHighlight,
-  View,
-  Alert,
-  BackHandler,
-  Pressable,
-  AsyncStorage,
+  View, Alert, BackHandler, Pressable,
 } from "react-native";
-import { useEffect, useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useEffect, useState} from "react";
 import logo from "../../assets/logo1.png";
 import axios from "axios";
+import {baseUrl} from "../constants/baseUrl";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -40,15 +38,16 @@ export default function LoginScreen({ navigation }) {
   const login = async () => {
     try {
       const { data } = await axios({
-        url: "https://2d0a-202-80-215-137.ap.ngrok.io/users/login",
+        url: baseUrl + "/users/login",
         method: "POST",
-        data: { email, password },
-      });
-      await storeData({ id: data.id, access_token: data.access_token });
+        data: {email, password}
+      })
+
+      await storeData({id: data.id, access_token: data.access_token})
       navigation.navigate({
         name: "Home",
-        // params: {id: data.id}
-      });
+        params: {id: data.id, access_token: data.access_token}
+      })
     } catch (e) {
       console.log(e);
     }
@@ -91,6 +90,7 @@ export default function LoginScreen({ navigation }) {
         onChangeText={setPassword}
         value={password}
         placeholder="Password"
+        secureTextEntry={true}
       />
       <TouchableHighlight
         onPress={() => login()}
