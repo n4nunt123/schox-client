@@ -4,13 +4,11 @@ import {useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import {useFocusEffect} from "@react-navigation/native";
+import {baseUrl} from "../constants/baseUrl";
 
-import { baseUrl } from "../constants/baseUrl";
-
-export default function SubscriptionScreen({navigation}) {
+export default function ChooseSubscription({navigation}) {
     const [flag, useFlag] = useState(false)
     const [detail, setDetail] = useState({})
-
     const getData = async () => {
         try {
             const jsonValue = await AsyncStorage.getItem('@storage_Key')
@@ -27,11 +25,33 @@ export default function SubscriptionScreen({navigation}) {
                 method: "GET",
                 headers: {access_token: token}
             })
-            setDetail(data)
+            setDetail(data.user)
         } catch (e) {
             console.log(e)
         }
     }
+    const subscribe = async (finalBalance) => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            let value = JSON.parse(jsonValue)
+            await axios({
+                url: baseUrl + "/users/balances/" + detail.id,
+                method: "PATCH",
+                headers: { access_token: value.access_token },
+                data: { balance: finalBalance }
+            })
+
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            getData()
+        }, [])
+    )
+
     const weekly = () => {
         useFlag(true)
     }
@@ -53,7 +73,12 @@ export default function SubscriptionScreen({navigation}) {
                         Alert.alert("Opps!", "Your balance is insufficient");
                         navigation.navigate('Profile')
                     } else {
-                        // logic ngurangin balance
+                        // subscribe(detail.balance - 300000)
+                        const finalBalance = detail.balance - 300000
+                        navigation.navigate({
+                            name: "Weekly",
+                            params: {finalBalance}
+                        })
                     }
                 }}>
                     <Text style={{color: "white", fontSize: 14}}>Subscribe Now</Text>
@@ -76,7 +101,11 @@ export default function SubscriptionScreen({navigation}) {
                         Alert.alert("Opps!", "Your balance is insufficient");
                         navigation.navigate('Profile')
                     } else {
-                        // logic ngurangin balance
+                        const finalBalance = detail.balance - 1000000
+                        navigation.navigate({
+                            name: "Monthly",
+                            params: {finalBalance}
+                        })
                     }
                 }}>
                     <Text style={{color: "white", fontSize: 14, fontWeight: 'bold'}}>Subscribe Now</Text>
@@ -84,13 +113,8 @@ export default function SubscriptionScreen({navigation}) {
             </View>
         )
     }
-
-    useFocusEffect(
-        React.useCallback(() => {
-            getData()
-        }, [])
-    )
     return (
+
         <View style={styles.top}>
             <Text style={{
                 color: "white",

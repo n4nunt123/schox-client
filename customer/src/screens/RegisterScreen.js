@@ -6,13 +6,17 @@ import {
   ImageBackground,
   Image,
   TouchableHighlight,
-  View, Pressable,
+  View, Pressable, Alert,
 } from "react-native";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import logo from "../../assets/logo1.png";
+import * as React from "react";
+import axios from "axios";
+import {baseUrl} from "../constants/baseUrl";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-export default function RegisterScreen({navigation}) {
+export default function RegisterScreen({navigation, route}) {
 
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
@@ -23,60 +27,131 @@ export default function RegisterScreen({navigation}) {
   const [latitude, setLatitude] = useState("")
   const [longitude, setLongitude] = useState("")
 
+  const register = async () => {
+    try {
+      if (!latitude || !longitude) {
+        Alert.alert("Opps!", "Please set your location first")
+      }
+      await axios({
+        url: baseUrl + "/users/register",
+        method: "post",
+        data: {email, password, fullName, phoneNumber, address, childrenName, latitude, longitude}
+      })
+
+      const { data } = await axios({
+        url: baseUrl + "/users/login",
+        method: "POST",
+        data: {email, password}
+      })
+
+      console.log(data, "<<< ini data")
+
+      await storeData({id: data.id, access_token: data.access_token})
+      navigation.navigate({
+        name: "Home",
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem("@storage_Key", jsonValue);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  // const login = async () => {
+  //   try {
+  //     const { data } = await axios({
+  //       url: baseUrl + "/users/login",
+  //       method: "POST",
+  //       data: {email, password}
+  //     })
+  //
+  //     await storeData({id: data.id, access_token: data.access_token})
+  //     navigation.navigate({
+  //       name: "Home",
+  //       params: {id: data.id, access_token: data.access_token}
+  //     })
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
+
+  useEffect(() => {
+    if (route.params?.coords) {
+      // console.log(route.params?.coords, "<< di register")
+      setLatitude(route.params?.coords.latitude)
+      setLongitude(route.params?.coords.longitude)
+    }
+  }, [route.params?.coords])
+
   return (
     <ImageBackground
       source={require("../../assets/background.png")}
       style={styles.container}
     >
-      <Image source={logo} style={styles.logo} />
+      <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+        <Image source={logo} style={styles.logo} />
 
-      <TextInput
-        style={[styles.input, { marginTop: 50 }]}
-        onChangeText={setFullName}
-        value={fullName}
-        placeholder="Name"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={setEmail}
-        value={email}
-        placeholder="Email"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={setPassword}
-        value={password}
-        placeholder="Password"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={setPhoneNumber}
-        value={phoneNumber}
-        placeholder="Phone Number"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={setAddress}
-        value={address}
-        placeholder="Address"
-      />
+        <TextInput
+            style={[styles.input, { marginTop: 50 }]}
+            onChangeText={setFullName}
+            value={fullName}
+            placeholder="Name"
+        />
+        <TextInput
+            style={styles.input}
+            onChangeText={setEmail}
+            value={email}
+            placeholder="Email"
+        />
+        <TextInput
+            style={styles.input}
+            onChangeText={setPassword}
+            value={password}
+            placeholder="Password"
+            secureTextEntry={true}
+        />
+        <TextInput
+            style={styles.input}
+            onChangeText={setPhoneNumber}
+            value={phoneNumber}
+            placeholder="Phone Number"
+        />
+        <TextInput
+            style={styles.input}
+            onChangeText={setChildrenName}
+            value={childrenName}
+            placeholder="Your children name"
+        />
+        <TextInput
+            style={styles.input}
+            onChangeText={setAddress}
+            value={address}
+            placeholder="Address"
+        />
+        <View style={{flexDirection: "row"}}>
+          {!latitude ? <TouchableHighlight onPress={() => navigation.navigate("location")} style={styles.setLoc} underlayColor="#fff">
+            <Text style={styles.submitText}>Set Location</Text>
+          </TouchableHighlight> : <TouchableHighlight onPress={() => navigation.navigate("location")} style={styles.location} underlayColor="#fff">
+            <Text style={styles.submitText}>Location Set!</Text>
+          </TouchableHighlight>}
+          <TouchableHighlight onPress={() => register()} style={styles.submit} underlayColor="#fff">
+            <Text style={styles.submitText}>Register</Text>
+          </TouchableHighlight>
+        </View>
 
-      <TextInput
-          style={styles.input}
-          onChangeText={setChildrenName}
-          value={childrenName}
-          placeholder="Your children name"
-      />
-      <TouchableHighlight style={styles.submit} underlayColor="#fff">
-
-        <Text style={styles.submitText}>Register</Text>
-      </TouchableHighlight>
-
-      <View style={styles.control}>
-        <Text style={styles.desc}>Already have a account? </Text>
-        <Pressable onPress={() => navigation.navigate("login")}>
-          <Text style={[styles.desc, {color: 'white'}]}>Sign in</Text>
-        </Pressable>
+        <View style={styles.control}>
+          <Text style={styles.desc}>Already have a account? </Text>
+          <Pressable onPress={() => navigation.navigate("login")}>
+            <Text style={[styles.desc, {color: 'white'}]}>Sign in</Text>
+          </Pressable>
+        </View>
       </View>
       <StatusBar style="auto" />
     </ImageBackground>
@@ -120,7 +195,27 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: '70%',
+    marginLeft: 135,
+    marginTop: 10
+  },
+  location: {
+    borderRadius: 40,
+    backgroundColor: "#28c500",
+    width: 100,
+    paddingVertical: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 15,
+    marginTop: 10
+  },
+  setLoc: {
+    borderRadius: 40,
+    backgroundColor: "#c50000",
+    width: 100,
+    paddingVertical: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 15,
     marginTop: 10
   },
   submitText: {
@@ -128,7 +223,8 @@ const styles = StyleSheet.create({
   },
   control: {
     flexDirection: "row",
-    marginTop: 130,
-    marginLeft: 70,
+    marginTop: 90,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

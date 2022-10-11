@@ -1,21 +1,54 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import {useState} from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import {baseUrl} from "../constants/baseUrl";
+import {useFocusEffect} from "@react-navigation/native";
+import * as React from "react";
+import moment from "moment";
 
-function SubsScreen() {
+function SubsScreen({navigation}) {
+    const [detail, setDetail] = useState({})
+    const date = moment(detail.Subscription?.endDate).format('MMMM D, YYYY')
+    const getData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            let value = JSON.parse(jsonValue)
+            await detailCustomer(value?.id, value?.access_token)
+        } catch(e) {
+            console.log(e)
+        }
+    }
+    const detailCustomer = async (id, token) => {
+        try {
+            const { data } = await axios({
+                url: baseUrl + "/users/" + id,
+                method: "GET",
+                headers: { access_token: token }
+            })
+            setDetail(data.user)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    useFocusEffect(
+        React.useCallback(() => {
+            getData()
+        }, [])
+    )
     return (
         <View style={styles.container}>
             <View style={styles.subsView}>
                 <Text style={styles.subsText}>Subscriptions</Text>
             </View>
             <View style={styles.mainCard}>
-                <View style={styles.infoView}>
-                    <Text style={styles.infoText}>You already subscribed</Text>
-                </View>
                 <View>
+                    <Text style={styles.infoText}>You already subscribed</Text>
                     <Text style={styles.endDateText}>End Date</Text>
                 </View>
                 <View>
-                    <Text style={styles.dateText}>3 November, 2022</Text>
+                    <Text style={styles.dateText}>{date}</Text>
                 </View>
             </View>
             <StatusBar style="auto" />
@@ -44,7 +77,8 @@ const styles = StyleSheet.create({
         height: 750,
         borderRadius: 40,
         backgroundColor: '#FFFFFF',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingTop: 150
     },
     infoView: {
         height: 200,

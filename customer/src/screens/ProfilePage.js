@@ -10,10 +10,12 @@ import { useState } from "react";
 import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
 import * as React from "react";
-import { baseUrl } from "../constants/baseUrl";
+import {baseUrl} from "../constants/baseUrl";
+import moment from "moment/moment";
 
 export default function ProfilePage({ navigation }) {
-  const [detail, setDetail] = useState({});
+  const [detail, setDetail] = useState({})
+  const date = moment(detail.Subscription?.endDate).format('MMMM D, YYYY')
 
   const getData = async () => {
     try {
@@ -29,9 +31,10 @@ export default function ProfilePage({ navigation }) {
       const { data } = await axios({
         url: baseUrl + "/users/" + id,
         method: "GET",
-        headers: { access_token: token },
-      });
-      setDetail(data);
+        headers: { access_token: token }
+      })
+      setDetail(data.user)
+
     } catch (e) {
       console.log(e);
     }
@@ -71,16 +74,12 @@ export default function ProfilePage({ navigation }) {
           <Text style={styles.infoMoney}>Balance</Text>
         </View>
         <View style={styles.verticleLine}></View>
-        {!detail.SubscriptionId ? (
-          <View style={styles.containerSubsTime}>
-            <Text style={styles.infoText}>No subscription</Text>
-          </View>
-        ) : (
-          <View style={styles.containerSubsTime}>
-            <Text style={styles.infoText}>3 November 2022</Text>
-            <Text style={styles.infoMoney}>End Date</Text>
-          </View>
-        )}
+        {!detail.SubscriptionId ? <View style={styles.containerSubsTime}>
+          <Text style={styles.infoText}>No subscription</Text>
+        </View> : <View style={styles.containerSubsTime}>
+          <Text style={styles.infoText}>{date}</Text>
+          <Text style={styles.infoMoney}>End Date</Text>
+        </View>}
       </View>
       <View style={styles.horizontalLine} />
       <View style={styles.containerMenu}>
