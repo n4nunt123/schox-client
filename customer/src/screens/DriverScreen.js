@@ -7,7 +7,7 @@ import arrow from "../../assets/icon/arrow.png";
 import dot from "../../assets/icon/dot.png";
 import arrive from "../../assets/icon/arrive.png";
 
-export default function DriverScreen() {
+export default function DriverScreen({ navigation }) {
 
   const [emit, useEmit] = useState('')
   const [socket, setSocket] = useState('')
@@ -77,7 +77,7 @@ export default function DriverScreen() {
         </View>
       </View>
 
-      <Pressable style={styles.control}>
+      <Pressable style={styles.control} onPress={() => navigation.navigate('Chat')}>
         <View style={styles.chatBox}>
           <Text style={styles.chat}>CHAT</Text>
         </View>
