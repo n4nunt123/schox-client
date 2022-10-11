@@ -1,14 +1,20 @@
-import {Image, Pressable, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, Image, Pressable, StyleSheet, Text, View} from "react-native";
 import {SafeAreaView} from 'react-native-safe-area-context';
 import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
 import * as Location from 'expo-location';
-import {useEffect, useState} from "react";
+import { useState} from "react";
+import * as React from 'react';
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useFocusEffect} from "@react-navigation/native";
 
-export default function HomeScreen({navigation}) {
+const mapRef = React.createRef();
+export default function HomeScreen({navigation, route}) {
     const [origin, setOrigin] = useState({
         longitude: 0,
         latitude: 0
     })
+    const [detail, setDetail] = useState({})
 
     const getLocation = async() => {
         try {
@@ -16,7 +22,6 @@ export default function HomeScreen({navigation}) {
             if (status !== 'granted') {
                 return;
             }
-
             let location = await Location.getCurrentPositionAsync({
                 accuracy: Location.Accuracy.Balanced,
                 enableHighAccuracy: true,
@@ -27,25 +32,52 @@ export default function HomeScreen({navigation}) {
             console.log(e)
         }
     }
+    const getData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            let value = JSON.parse(jsonValue)
+            await detailDriver(value?.id)
+        } catch(e) {
+            console.log(e)
+        }
+    }
+    const detailDriver = async (id) => {
+        try {
+            const { data } = await axios({
+                url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/drivers/" + id,
+                method: "GET"
+            })
+            setDetail(data)
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
-    useEffect(() => {
-        getLocation()
-    }, []);
+    useFocusEffect(
+        React.useCallback(() => {
+            getData()
+                .then(() => getLocation())
+                .then(() => mapRef.current.animateCamera({center: {"latitude":origin.latitude, "longitude": origin.longitude}}))
+        }, [])
+    )
+
     return (
         <SafeAreaView style={styles.container}>
-            <Pressable onPress={() => navigation.navigate('Profile')} style={styles.topCard}>
-                <View style={{flex: 1}}>
-                    <Image source={require("../../assets/profile.png")} style={{height: 80, width: 80}}/>
+            <Pressable onPress={() => {
+                navigation.navigate('Profile')
+            }} style={styles.topCard}>
+                <View style={{flex: 1, marginLeft: 20}}>
+                    <Image source={{uri: `${detail?.imgUrl}`}} style={{height: 80, width: 80, borderRadius: 50}}/>
                 </View>
-                <View style={{flex: 4, flexDirection: "column", marginHorizontal: 50}}>
-                    <Text style={{fontSize: 20, fontWeight: "bold"}}>Hello, Driver Name</Text>
+                <View style={{flex: 4, flexDirection: "column", marginHorizontal: 30, paddingLeft: 30}}>
+                    <Text style={{fontSize: 20, fontWeight: "bold"}}>Hello, {detail?.fullName}</Text>
                     <View style={{backgroundColor: 'green', borderRadius: 30, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}}>
                         <Text style={{color: "white"}}>Available</Text>
                     </View>
                 </View>
             </Pressable>
             <View style={styles.bottomCard}>
-                <MapView style={styles.map} provider={PROVIDER_GOOGLE} showsUserLocation={true} zoomControlEnabled={true} >
+                <MapView ref={mapRef} style={styles.map} provider={PROVIDER_GOOGLE} showsUserLocation={true} zoomControlEnabled={true} >
                     <Marker
                         coordinate={{latitude: origin.latitude,
                             longitude: origin.longitude}}

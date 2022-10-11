@@ -1,12 +1,29 @@
 import { StatusBar } from "expo-status-bar";
-import { Image, StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  TouchableHighlight,
+  AsyncStorage,
+} from "react-native";
 
 import profile from "../../assets/icon/SeekPng.com_profile-icon-png_9665493.png";
 import topUp from "../../assets/icon/wallet.png";
 import logOut from "../../assets/icon/logOut.png";
 import location from "../../assets/icon/location.png";
 
-export default function ProfilePage() {
+export default function ProfilePage({ navigation }) {
+  const clearAsyncStorage = async () => {
+    AsyncStorage.clear();
+    navigation.navigate({
+      name: "login",
+      // params: {id: data.id}
+    });
+  };
+
   return (
     <View style={styles.containerPhoto}>
       <View style={styles.userView}>
@@ -32,18 +49,21 @@ export default function ProfilePage() {
       </View>
       <View style={styles.horizontalLine} />
       <View style={styles.containerMenu}>
-        <View style={styles.menuRow}>
+        <Pressable
+          onPress={() => navigation.navigate("Top Up")}
+          style={styles.menuRow}
+        >
           <Image style={styles.menu} source={topUp} />
           <Text style={styles.textMenu}>Top Up</Text>
-        </View>
+        </Pressable>
         <View style={styles.menuRow}>
           <Image style={styles.menu} source={location} />
           <Text style={styles.textMenu}>Address</Text>
         </View>
-        <View style={styles.menuRow}>
+        <Pressable onPress={clearAsyncStorage} style={styles.menuRow}>
           <Image style={styles.menu} source={logOut} />
-          <Text style={[styles.textMenu, {color: '#ee5d6b'}]}>logOut</Text>
-        </View>
+          <Text style={[styles.textMenu, { color: "#ee5d6b" }]}>logOut</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -79,7 +99,7 @@ const styles = StyleSheet.create({
   userView: {
     width: "100%",
     flexDirection: "row",
-    marginTop: 30,
+    marginTop: 50,
     marginBottom: 30,
     paddingHorizontal: 20,
   },
