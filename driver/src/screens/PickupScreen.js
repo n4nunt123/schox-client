@@ -7,47 +7,43 @@ import * as Location from 'expo-location';
 export default function ProfileScreen() {
   const [emit, setEmit] = useState('')
   const [status, setStatus] = useState('depart')
-  const [coordinate, setCoordinate] = useState({
-    latitude: 0,
-    longtitude: 0
-  })
-
-  useEffect(() => {
-    getLocation()
-  }, [coordinate]);
 
   const getLocation = async() => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-          return;
+        return;
       }
 
       let location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-          enableHighAccuracy: true,
-          timeInterval: 5
+        accuracy: Location.Accuracy.High,
+        enableHighAccuracy: true,
+        timeInterval: 5
       });
-      setCoordinate({longitude: location.coords.longitude, latitude: location.coords.latitude});
+      const coordinate = {
+        longitude: location.coords.longitude,
+        latitude: location.coords.latitude
+      };
+      console.log(coordinate)
+      socketInstance.emit('send:interval', coordinate)
     } catch (e) {
       console.log(e)
     }
   }
 
-  const sendInterval = async () => {
-    socketInstance.emit('send:interval', coordinate)
-  }
-
   const start = () => {
-    setEmit(setInterval(() => {
-      sendInterval()
-    }, 2000))
+    const intervalId = setInterval(() => {
+      getLocation()
+    }, 2000)
+
+    setEmit(intervalId)
   }
 
   const stop = () => {
     clearInterval(emit)
     setEmit('')
-    setStatus('arive')
+    setStatus('arrive')
+    console.log('stop')
   }
 
   return (
