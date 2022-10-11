@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import axios from "axios";
+import {baseUrl} from "../constants/baseUrl";
 
 export default function TopUp({ navigation }) {
   const [value, setValue] = useState("");
@@ -24,7 +25,7 @@ export default function TopUp({ navigation }) {
         const order = `${id}--testing`;
 
         const { data } = await axios({
-          url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io" + "/users/balances",
+          url: baseUrl + "/users/balances",
           method: "post",
           data: {
             order: order,
