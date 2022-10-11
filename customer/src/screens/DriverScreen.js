@@ -1,6 +1,11 @@
-import { View, Text, Button } from "react-native";
 import { useState, useEffect } from "react";
 import { socketInstance } from '../socket/socket'
+import { View, Text, StyleSheet, Image, Pressable, Button } from "react-native";
+import * as React from "react";
+import profile from "../../assets/icon/SeekPng.com_profile-icon-png_9665493.png";
+import arrow from "../../assets/icon/arrow.png";
+import dot from "../../assets/icon/dot.png";
+import arrive from "../../assets/icon/arrive.png";
 
 export default function DriverScreen() {
 
@@ -31,17 +36,125 @@ export default function DriverScreen() {
   }
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>DRIVER SCREEN</Text>
-      <Button 
-        onPress={start}
-        title='test SOCKET'
-      />
-      <Button 
-        onPress={stop}
-        title='stop SOCKET'
-      />
-      <Text>{socket}</Text>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "white",
+      }}
+    >
+      <View style={styles.profile}>
+        <Image source={profile} style={styles.profileIcon} />
+        <Text style={styles.name}>Nama Driver</Text>
+        <Text style={styles.license}>B4312WNN</Text>
+      </View>
+
+      <View>
+        <Text style={styles.title}>Detail Perjalanan</Text>
+      </View>
+      <View style={styles.details}>
+        <View style={styles.detail}>
+          <Image source={arrow} style={styles.arrowIcon} />
+          <View>
+            <Text style={styles.description}>Lokasi jemput</Text>
+            <Text style={{ color: "#0d155a" }}>
+              Jalan Mangga 2, lewatin rumput
+            </Text>
+          </View>
+        </View>
+        <Image source={dot} style={styles.dotIcon} />
+        <Image source={dot} style={styles.dotIcon} />
+        <Image source={dot} style={[styles.dotIcon, styles.lastChild]} />
+        <View style={styles.detail}>
+          <Image source={arrive} style={styles.arrowIcon} />
+          <View>
+            <Text style={styles.description}>Lokasi jemput</Text>
+            <Text style={{ color: "#0d155a" }}>
+              Jalan Jeruk 5, lewatin macan
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      <Pressable style={styles.control}>
+        <View style={styles.chatBox}>
+          <Text style={styles.chat}>CHAT</Text>
+        </View>
+      </Pressable>
     </View>
-  )
+  );
 }
+
+const styles = StyleSheet.create({
+  profile: {
+    flex: 1,
+    marginTop: 25,
+    alignItems: "center",
+  },
+  profileIcon: {
+    width: 100,
+    height: 100,
+  },
+  name: {
+    color: "#0d155a",
+    fontSize: 22,
+  },
+  license: {
+    color: "#999999",
+    fontSize: 12,
+  },
+  detail: {
+    flexDirection: "row",
+  },
+  arrowIcon: {
+    width: 30,
+    height: 30,
+    marginRight: 10,
+  },
+  description: {
+    fontWeight: "100",
+    fontSize: 10,
+    color: "#8f90a8",
+  },
+  title: {
+    color: "#0d155a",
+    fontSize: 17,
+    marginBottom: 30,
+  },
+  details: {
+    flex: 1.5,
+  },
+  dot: {
+    color: "#72769f",
+    padding: 10,
+  },
+  dotIcon: {
+    width: 10,
+    height: 10,
+    marginLeft: 10,
+    marginTop: 7,
+  },
+  lastChild: {
+    marginBottom: 7,
+  },
+  control: {
+    flex: 1,
+  },
+  chat: {
+    color: "#0d155a",
+    marginTop: 7,
+    fontSize: 25,
+    alignItems: "center",
+    alignContent: "center",
+  },
+  chatBox: {
+    alignItems: "center",
+    alignContent: "center",
+    borderColor: "#0d155a",
+    borderWidth: 2,
+    borderRadius: 30,
+    height: 50,
+    width: 300,
+  },
+});

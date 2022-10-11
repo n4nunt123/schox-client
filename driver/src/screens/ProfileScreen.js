@@ -1,11 +1,51 @@
-import {Text, View, StyleSheet, Image, Modal, Pressable, ScrollView} from "react-native";
+import {Text, View, StyleSheet, Image, Modal, Pressable, ScrollView, TouchableHighlight} from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {Picker} from '@react-native-picker/picker';
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import {useFocusEffect} from "@react-navigation/native";
+import * as React from "react";
+import {baseUrl} from "../constants/baseUrl";
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [status, setStatus] = useState("Available");
+    const [detail, setDetail] = useState({})
+
+    const logout = async () => {
+        try {
+            await AsyncStorage.clear()
+            navigation.navigate("login")
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    const getData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            let value = JSON.parse(jsonValue)
+            await detailDriver(value?.id)
+        } catch(e) {
+            console.log(e)
+        }
+    }
+    const detailDriver = async (id) => {
+        try {
+            const { data } = await axios({
+                url: baseUrl + "/drivers/" + id,
+                method: "GET"
+            })
+            setDetail(data)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    useFocusEffect(
+        React.useCallback(() => {
+            getData()
+        }, [])
+    )
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topCard}>
@@ -14,11 +54,16 @@ export default function ProfileScreen() {
             <View style={styles.card}>
                 {/* profile */}
                 <View style={styles.cardProfile}>
-                    <Image source={require("../../assets/profile.png")} style={{height: 80, width: 80}} />
-                    <Text style={styles.driverText}>Mr. Driver</Text>
-                    <Pressable style={[styles.button, styles.buttonOpen]} onPress={() => setModalVisible(true)}>
-                        <Text style={{color: "white"}}>{status}</Text>
-                    </Pressable>
+                    <Image source={{uri: `${detail?.imgUrl}`}} style={{height: 80, width: 80, borderRadius: 50}} />
+                    <Text style={styles.driverText}>Mr. {detail?.fullName}</Text>
+                    <View style={{flexDirection: "row", width: "100%", justifyContent: "center"}}>
+                        <TouchableHighlight style={[styles.button, styles.buttonOpen]} onPress={() => setModalVisible(true)}>
+                            <Text style={{color: "white"}}>{status}</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight onPress={() => logout()} style={[styles.button,styles.buttonLogout]}>
+                            <Text style={{color: "white"}}>Logout</Text>
+                        </TouchableHighlight>
+                    </View>
                     <Modal
                         animationType="slide"
                         transparent={true}
@@ -42,17 +87,11 @@ export default function ProfileScreen() {
                 </View>
                 {/*  balance  */}
                 <View style={styles.cardBalance}>
-                    <Text style={styles.modalText}>Balance: Rp. 1.000.000,00</Text>
+                    <Text style={styles.modalText}>Balance: Rp. {detail?.balance}</Text>
                 </View>
                 {/*  schedule  */}
                 <View style={styles.cardSchedule}>
                     <ScrollView style={{width: "100%", height: "100%"}}>
-                        <View style={styles.schedule}>
-                            <Text>Schedule</Text>
-                        </View>
-                        <View style={styles.schedule}>
-                            <Text>Schedule</Text>
-                        </View>
                         <View style={styles.schedule}>
                             <Text>Schedule</Text>
                         </View>
@@ -117,12 +156,16 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 10,
         elevation: 2,
+        marginHorizontal: 5
     },
     buttonOpen: {
         backgroundColor: 'green',
     },
     buttonClose: {
         backgroundColor: '#2196F3',
+    },
+    buttonLogout: {
+        backgroundColor: '#c70000',
     },
     textStyle: {
         color: 'white',
