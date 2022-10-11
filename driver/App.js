@@ -8,6 +8,8 @@ import ChatScreen from "./src/screens/ChatScreen";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {useState} from "react";
 
+import PickupScreen from './src/screens/PickupScreen'
+
 const Tab = createBottomTabNavigator();
 export default function App() {
     const [loginForm, setLoginForm] = useState({
@@ -53,6 +55,11 @@ export default function App() {
                 <Tab.Screen
                     name="Chat"
                     component={ChatScreen}
+                    options={{headerShown: false}}
+                />
+                <Tab.Screen
+                    name="Pickup"
+                    component={PickupScreen}
                     options={{headerShown: false}}
                 />
             </Tab.Navigator>
