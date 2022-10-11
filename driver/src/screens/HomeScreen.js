@@ -58,7 +58,7 @@ export default function HomeScreen({navigation, route}) {
     useFocusEffect(
         React.useCallback(() => {
             getData()
-                .then(() => getLocation())
+            getLocation()
         }, [])
     )
 

@@ -69,7 +69,7 @@ export default function ProfilePage({ navigation }) {
       <View style={styles.containerMiddle}>
         <View style={styles.containerWallet}>
           <Text style={styles.infoText}>
-            Rp. {detail.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+            Rp. {detail.balance?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
           </Text>
           <Text style={styles.infoMoney}>Balance</Text>
         </View>
