@@ -4,8 +4,8 @@ import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 import HomeScreen from "../screens/HomeScreen";
 import TripScreen from "../screens/TripScreen";
-import DriverScreen from "../screens/DriverScreen";
 import SchoolScreen from "../screens/SchoolScreen";
+import DriverNavigator from '../navigators/DriverNavigator'
 
 const Stack = createNativeStackNavigator();
 
@@ -34,8 +34,8 @@ export default function HomeNavigator({ navigation, route }) {
       />
       <Stack.Screen
         name="Driver"
-        component={DriverScreen}
-        options={{ headerShown: true }}
+        component={DriverNavigator}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="School"

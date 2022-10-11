@@ -5,6 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import {useFocusEffect} from "@react-navigation/native";
 
+import { baseUrl } from "../constants/baseUrl";
+
 export default function SubscriptionScreen({navigation}) {
     const [flag, useFlag] = useState(false)
     const [detail, setDetail] = useState({})
@@ -21,7 +23,7 @@ export default function SubscriptionScreen({navigation}) {
     const detailCustomer = async (id, token) => {
         try {
             const {data} = await axios({
-                url: "https://5299-2001-448a-2040-44a9-c6e-79a9-fa8a-6fc1.ap.ngrok.io/users/" + id,
+                url: baseUrl + "/users/" + id,
                 method: "GET",
                 headers: {access_token: token}
             })

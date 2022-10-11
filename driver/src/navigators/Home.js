@@ -6,6 +6,8 @@ import ChatScreen from "../screens/ChatScreen";
 import {useEffect} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import PickupScreen from '../screens/PickupScreen'
+
 const Tab = createBottomTabNavigator();
 export default function Home({navigation, route}) {
     const getData = async () => {
@@ -60,6 +62,11 @@ export default function Home({navigation, route}) {
             <Tab.Screen
                 name="Chat"
                 component={ChatScreen}
+                options={{headerShown: false}}
+            />
+            <Tab.Screen
+                name="Pickup"
+                component={PickupScreen}
                 options={{headerShown: false}}
             />
         </Tab.Navigator>
