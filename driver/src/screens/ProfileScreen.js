@@ -8,6 +8,7 @@ import axios from "axios";
 import {useFocusEffect} from "@react-navigation/native";
 import {baseUrl} from "../constants/baseUrl";
 
+
 export default function ProfileScreen({navigation}) {
     const [status, setStatus] = useState("Available");
     const [detail, setDetail] = useState({})

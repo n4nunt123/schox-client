@@ -57,6 +57,9 @@ export default function TopUp({ navigation }) {
         placeholder="Rp 0"
         keyboardType="numeric"
       />
+      <View style={{flexDirection: "row-reverse"}}>
+      <Text style={styles.description}>Min Rp 100.000</Text>
+      </View>
       <StatusBar style="auto" />
       <TouchableOpacity onPress={onSubmit(value)}>
         <View style={styles.button}>
@@ -70,13 +73,13 @@ export default function TopUp({ navigation }) {
 const styles = StyleSheet.create({
   containerPhoto: {
     flex: 1,
+    padding: 10
   },
   userView: {
     width: "100%",
     flexDirection: "row",
     marginTop: 20,
-    marginBottom: 20,
-    paddingHorizontal: 20,
+    marginBottom: 10,
   },
   hallo: {
     color: "#2B377F",
@@ -87,9 +90,11 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    margin: 12,
     borderWidth: 1,
     padding: 10,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    borderColor: '#a0acda'
   },
   button: {
     paddingVertical: 14,
@@ -106,4 +111,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: "center",
   },
+  description: {
+    color: '#ec5f58',
+    fontSize: 12,
+    marginBottom: 10
+  }
 });
