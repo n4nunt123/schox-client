@@ -4,22 +4,29 @@ import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
 import * as Location from 'expo-location';
 import { useState} from "react";
 import * as React from 'react';
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useFocusEffect} from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux"
+import { getDataDriver } from "../store/actions/driverAction";
 import {baseUrl} from "../constants/baseUrl";
 import moment from "moment";
 
 const mapRef = React.createRef();
 export default function HomeScreen({navigation, route}) {
+    const dispatch = useDispatch()
+    const { driver } = useSelector((state) => {
+        return state.driverReducer
+    })
+
     const [origin, setOrigin] = useState({
         longitude: 0,
         latitude: 0
     })
+
     const [detail, setDetail] = useState({})
     const [isBooked, setIsBooked] = useState(null)
     const [endDate, setEndDate] = useState("")
     const date = moment(endDate).format('MMMM D, YYYY')
+
 
     const getLocation = async() => {
         try {
@@ -41,22 +48,12 @@ export default function HomeScreen({navigation, route}) {
     }
     const getData = async () => {
         try {
+            dispatch(getDataDriver())
+            await mapRef.current.animateCamera({center: {"latitude":origin.latitude, "longitude": origin.longitude}})
             const jsonValue = await AsyncStorage.getItem('@storage_Key')
             let value = JSON.parse(jsonValue)
-            await detailDriver(value?.id)
             await checkStatus(value?.id)
         } catch(e) {
-            console.log(e)
-        }
-    }
-    const detailDriver = async (id) => {
-        try {
-            const { data } = await axios({
-                url: baseUrl + "/drivers/" + id,
-                method: "GET"
-            })
-            setDetail(data)
-        } catch (e) {
             console.log(e)
         }
     }
@@ -109,13 +106,13 @@ export default function HomeScreen({navigation, route}) {
                 navigation.navigate('Profile')
             }} style={styles.topCard}>
                 <View style={{flex: 1, marginLeft: 20}}>
-                    <Image source={{uri: `${detail?.imgUrl}`}} style={{height: 80, width: 80, borderRadius: 50}}/>
+                    <Image source={{uri: `${driver?.imgUrl}`}} style={{height: 80, width: 80, borderRadius: 50}}/>
                 </View>
                 <View style={{flex: 4, flexDirection: "column", marginHorizontal: 30, paddingLeft: 30}}>
-                    <Text style={{fontSize: 20, fontWeight: "bold"}}>Hello, {detail?.fullName}</Text>
+                    <Text style={{fontSize: 20, fontWeight: "bold"}}>Hello, {driver?.fullName}</Text>
                     {!isBooked ?
                         <View style={[{borderRadius: 30, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, detail.driverStatus === "Available" ? {backgroundColor: 'green'} : {backgroundColor: 'grey'}]}>
-                            <Text style={{color: "white"}}>{detail?.driverStatus === "Available" ? detail?.driverStatus : "Non Available"}</Text>
+                            <Text style={{color: "white"}}>{driver?.driverStatus === "Available" ? driver?.driverStatus : "Non Available"}</Text>
                         </View>
                         :
                         <View style={[{borderRadius: 10, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, detail.driverStatus === "BOOKED" ? {backgroundColor: 'lightgreen'} : null]}>

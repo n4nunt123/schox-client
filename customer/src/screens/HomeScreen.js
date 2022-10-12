@@ -1,61 +1,40 @@
 import {
-  Button,
   Image,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableHighlight,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
 import * as React from "react";
-import axios from "axios";
 import {useFocusEffect} from "@react-navigation/native";
 import {StatusBar} from "expo-status-bar";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from "moment";
-import {baseUrl} from "../constants/baseUrl";
+
+import { useDispatch, useSelector } from "react-redux"
+import { getDataUser } from "../store/actions/userAction";
 
 export default function HomeScreen({navigation}) {
     const date = moment().format('MMMM D, YYYY')
-    const [detail, setDetail] = useState({})
-    const getData = async () => {
-        try {
-            const jsonValue = await AsyncStorage.getItem('@storage_Key')
-            let value = JSON.parse(jsonValue)
-            await detailCustomer(value?.id, value?.access_token)
-        } catch(e) {
-            console.log(e)
-        }
-    }
-    const detailCustomer = async (id, token) => {
-        try {
-            const { data } = await axios({
-                url: baseUrl + "/users/" + id,
-                method: "GET",
-                headers: { access_token: token }
-            })
-            setDetail(data.user)
-        } catch (e) {
-            console.log(e)
-        }
-    }
+    const dispatch = useDispatch()
+    const { user } = useSelector((state) => {
+        return state.userReducer
+    })
 
-  useFocusEffect(
+    useFocusEffect(
     React.useCallback(() => {
-      getData();
+        dispatch(getDataUser())
     }, [])
-  );
+    );
 
-    if (!detail?.SubscriptionId) {
+    if (!user?.SubscriptionId) {
         return (
             <View style={styles.container}>
                 <View style={styles.userView}>
 
                     <View style={{marginStart: 15}}>
-                        <Text style={styles.hallo}>Hello, {detail?.fullName}!</Text>
+                        <Text style={styles.hallo}>Hello, {user?.fullName}!</Text>
                         <Text style={styles.date}>{date}</Text>
                     </View>
                 </View>
@@ -78,7 +57,7 @@ export default function HomeScreen({navigation}) {
                         <Image source={require("../../assets/icon/SeekPng.com_profile-icon-png_9665493.png")} style={{width: 50, height: 50}} />
                     </View>
                     <View style={{flex: 4, flexDirection: "column"}}>
-                        <Text style={{fontSize: 22, fontWeight: 'bold', color: '#2b377e'}}>Hello, {detail?.fullName}</Text>
+                        <Text style={{fontSize: 22, fontWeight: 'bold', color: '#2b377e'}}>Hello, {user?.fullName}</Text>
                         <Text style={{color: "#a7a8c1"}}>{date}</Text>
                     </View>
                 </View>

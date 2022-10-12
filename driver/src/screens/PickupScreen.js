@@ -24,7 +24,6 @@ export default function ProfileScreen() {
         longitude: location.coords.longitude,
         latitude: location.coords.latitude
       };
-      console.log(coordinate)
       socketInstance.emit('send:interval', coordinate)
     } catch (e) {
       console.log(e)
@@ -32,6 +31,7 @@ export default function ProfileScreen() {
   }
 
   const start = () => {
+    console.log('start')
     const intervalId = setInterval(() => {
       getLocation()
     }, 2000)

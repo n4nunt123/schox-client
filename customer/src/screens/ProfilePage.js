@@ -6,39 +6,27 @@ import profile from "../../assets/icon/SeekPng.com_profile-icon-png_9665493.png"
 import topUp from "../../assets/icon/wallet.png";
 import logOut from "../../assets/icon/logOut.png";
 import location from "../../assets/icon/location.png";
-import { useState } from "react";
-import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
 import * as React from "react";
-import {baseUrl} from "../constants/baseUrl";
 import moment from "moment/moment";
 
+import { useDispatch, useSelector } from "react-redux"
+import { getDataUser } from "../store/actions/userAction";
+
 export default function ProfilePage({ navigation }) {
-  const [detail, setDetail] = useState({})
-  const date = moment(detail.Subscription?.endDate).format('MMMM D, YYYY')
+  const dispatch = useDispatch()
+  const { user } = useSelector((state) => {
+      return state.userReducer
+  })
 
-  const getData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("@storage_Key");
-      let value = JSON.parse(jsonValue);
-      await detailCustomer(value?.id, value?.access_token);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  const detailCustomer = async (id, token) => {
-    try {
-      const { data } = await axios({
-        url: baseUrl + "/users/" + id,
-        method: "GET",
-        headers: { access_token: token }
-      })
-      setDetail(data.user)
+  useFocusEffect(
+  React.useCallback(() => {
+      dispatch(getDataUser())
+  }, [])
+  );
 
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const date = moment(user.Subscription?.endDate).format('MMMM D, YYYY')
+
   const logout = async () => {
     try {
       await AsyncStorage.clear();
@@ -47,20 +35,13 @@ export default function ProfilePage({ navigation }) {
       console.log(e);
     }
   };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      getData();
-    }, [])
-  );
-
   return (
     <View style={styles.containerPhoto}>
       <View style={styles.userView}>
         <Image style={styles.profile} source={profile} />
         <View style={{ marginStart: 15 }}>
-          <Text style={styles.hallo}>{detail?.fullName}</Text>
-          <Text style={styles.date}>{detail?.phoneNumber}</Text>
+          <Text style={styles.hallo}>{user?.fullName}</Text>
+          <Text style={styles.date}>{user?.phoneNumber}</Text>
         </View>
       </View>
 
@@ -69,12 +50,12 @@ export default function ProfilePage({ navigation }) {
       <View style={styles.containerMiddle}>
         <View style={styles.containerWallet}>
           <Text style={styles.infoText}>
-            Rp. {detail.balance?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+            Rp. {user.balance?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
           </Text>
           <Text style={styles.infoMoney}>Balance</Text>
         </View>
         <View style={styles.verticleLine}></View>
-        {!detail.SubscriptionId ? <View style={styles.containerSubsTime}>
+        {!user.SubscriptionId ? <View style={styles.containerSubsTime}>
           <Text style={styles.infoText}>No subscription</Text>
         </View> : <View style={styles.containerSubsTime}>
           <Text style={styles.infoText}>{date}</Text>
@@ -92,7 +73,7 @@ export default function ProfilePage({ navigation }) {
         </Pressable>
         <View style={styles.menuRow}>
           <Image style={styles.menu} source={location} />
-          <Text style={styles.textMenu}>{detail.address}</Text>
+          <Text style={styles.textMenu}>{user.address}</Text>
         </View>
         <Pressable onPress={() => logout()} style={styles.menuRow}>
           <Image style={styles.menu} source={logOut} />

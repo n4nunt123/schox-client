@@ -6,52 +6,23 @@ import axios from "axios";
 import {useFocusEffect} from "@react-navigation/native";
 import {baseUrl} from "../constants/baseUrl";
 
+import { useDispatch, useSelector } from "react-redux"
+import { getDataUser } from "../store/actions/userAction";
+
+
 export default function ChooseSubscription({navigation}) {
     const [flag, useFlag] = useState(false)
-    const [detail, setDetail] = useState({})
-    const getData = async () => {
-        try {
-            const jsonValue = await AsyncStorage.getItem('@storage_Key')
-            let value = JSON.parse(jsonValue)
-            await detailCustomer(value?.id, value?.access_token)
-        } catch (e) {
-            console.log(e)
-        }
-    }
-    const detailCustomer = async (id, token) => {
-        try {
-            const {data} = await axios({
-                url: baseUrl + "/users/" + id,
-                method: "GET",
-                headers: {access_token: token}
-            })
-            setDetail(data.user)
-        } catch (e) {
-            console.log(e)
-        }
-    }
-    const subscribe = async (finalBalance) => {
-        try {
-            const jsonValue = await AsyncStorage.getItem('@storage_Key')
-            let value = JSON.parse(jsonValue)
-            await axios({
-                url: baseUrl + "/users/balances/" + detail.id,
-                method: "PATCH",
-                headers: { access_token: value.access_token },
-                data: { balance: finalBalance }
-            })
-
-        } catch (e) {
-            console.log(e)
-        }
-    }
+    const dispatch = useDispatch()
+    const { user } = useSelector((state) => {
+        return state.userReducer
+    })
 
     useFocusEffect(
         React.useCallback(() => {
-            getData()
+            dispatch(getDataUser())
         }, [])
     )
-
+    
     const weekly = () => {
         useFlag(true)
     }
@@ -69,12 +40,12 @@ export default function ChooseSubscription({navigation}) {
                 <Image style={{width: 200, height: 200, marginVertical: 20}}
                        source={require("../../assets/icon/Subscribe.png")}/>
                 <TouchableHighlight style={styles.subs} onPress={() => {
-                    if (detail.balance < 300000) {
+                    if (user.balance < 300000) {
                         Alert.alert("Opps!", "Your balance is insufficient");
                         navigation.navigate('Profile')
                     } else {
-                        // subscribe(detail.balance - 300000)
-                        const finalBalance = detail.balance - 300000
+                        // subscribe(user.balance - 300000)
+                        const finalBalance = user.balance - 300000
                         navigation.navigate({
                             name: "Weekly",
                             params: {finalBalance}
@@ -97,11 +68,11 @@ export default function ChooseSubscription({navigation}) {
                 <Image style={{width: 200, height: 200, marginVertical: 20}}
                        source={require("../../assets/icon/Subscribe.png")}/>
                 <TouchableHighlight style={styles.subs} onPress={() => {
-                    if (detail.balance < 1000000) {
+                    if (user.balance < 1000000) {
                         Alert.alert("Opps!", "Your balance is insufficient");
                         navigation.navigate('Profile')
                     } else {
-                        const finalBalance = detail.balance - 1000000
+                        const finalBalance = user.balance - 1000000
                         navigation.navigate({
                             name: "Monthly",
                             params: {finalBalance}

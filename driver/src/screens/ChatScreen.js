@@ -8,7 +8,18 @@ import axios from "axios";
 
 import { baseUrl } from '../constants/baseUrl'
 
+import { useDispatch, useSelector } from "react-redux"
+import { getDataChat } from "../store/actions/driverAction";
+
+
 export default function TalkOne() {
+  const dispatch = useDispatch()
+  const { chat } = useSelector((state) => {
+      return state.driverReducer
+  })
+
+  console.log(chat)
+
   const [driver, setDriver] = useState({
     id: '',
     name: '',
@@ -57,6 +68,7 @@ export default function TalkOne() {
 
   useFocusEffect(
     React.useCallback(() => {
+      dispatch(getDataChat())
       getData();
     }, [])
   );
