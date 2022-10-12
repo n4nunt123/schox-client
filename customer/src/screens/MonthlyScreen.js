@@ -7,14 +7,22 @@ import {useFocusEffect} from "@react-navigation/native";
 import {Picker} from '@react-native-picker/picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { useDispatch, useSelector } from "react-redux"
+import { getDataDrivers, postNewSub, patchNewBalance } from "../store/actions/userAction";
+
+
 export default function MonthlyScreen({navigation, route}) {
+    const dispatch = useDispatch()
+    const { drivers } = useSelector((state) => {
+        return state.userReducer
+    })
+
     const [data, setData] = useState({})
     const [goHomeTime, setGoHome] = useState(new Date('Oct 11, 1975 12:30:00'))
     const [toSchoolTime, setToSchool] = useState(new Date('Oct 11, 1975 07:30:00'))
     const [showHome, setShowHome] = useState(false)
     const [showSchool, setShowSchool] = useState(false)
-
-    const [drivers, setDrivers] = useState([])
+    
     const [schools, setSchools] = useState([])
     const [selectedSchool, setSelectedSchool] = useState(null)
     const [selectedSchoolName, setSelectedSchoolName] = useState("")
@@ -28,18 +36,7 @@ export default function MonthlyScreen({navigation, route}) {
         setShowSchool(false)
         setToSchool(selectedDate)
     };
-
-    const getDriver = async () => {
-        try {
-            const {data} = await axios({
-                url: baseUrl + "/drivers",
-                method: "GET"
-            })
-            setDrivers(data)
-        } catch (e) {
-            console.log(e)
-        }
-    }
+    
     const getSchool = async () => {
         try {
             const {data} = await axios({
@@ -71,19 +68,19 @@ export default function MonthlyScreen({navigation, route}) {
                 DriverId: selectedDriver,
                 SchoolId: selectedSchool
             }
-            await axios({
-                url: baseUrl + "/users/subscriptions",
-                method: "POST",
-                headers: { access_token: data.access_token },
-                data: body
-            })
 
-            await axios({
-                url: baseUrl + "/users/balances/" + data.id,
-                method: "PATCH",
-                headers: { access_token: data.access_token },
-                data: { balance: route.params.finalBalance }
-            })
+            const payloadSub = { 
+                body, 
+                access_token: data.access_token
+            }
+            dispatch(postNewSub(payloadSub))
+
+            const payloadBalance = {
+                id: data.id,
+                access_token: data.access_token,
+                finalBalance: route.params.finalBalance
+            }
+            dispatch(patchNewBalance(payloadBalance))
             navigation.goBack()
             //  navigate
         } catch (e) {
@@ -93,7 +90,7 @@ export default function MonthlyScreen({navigation, route}) {
 
     useFocusEffect(
         React.useCallback(() => {
-            getDriver()
+            dispatch(getDataDrivers())
             getSchool()
             getData()
         }, [])

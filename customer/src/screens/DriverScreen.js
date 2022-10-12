@@ -1,69 +1,24 @@
-import { useState, useEffect } from "react";
-import { socketInstance } from '../socket/socket'
 import { View, Text, StyleSheet, Image, Pressable, Button } from "react-native";
 import * as React from "react";
-import profile from "../../assets/icon/SeekPng.com_profile-icon-png_9665493.png";
 import arrow from "../../assets/icon/arrow.png";
 import dot from "../../assets/icon/dot.png";
 import arrive from "../../assets/icon/arrive.png";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import {baseUrl} from "../constants/baseUrl";
 import {useFocusEffect} from "@react-navigation/native";
 
+import { useDispatch, useSelector } from "react-redux"
+import { getDataUser } from "../store/actions/userAction";
+
 export default function DriverScreen({navigation}) {
-  const [driver, setDriver] = useState({})
-  const getData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem('@storage_Key')
-      let value = JSON.parse(jsonValue)
-      await detailDriver(value?.id, value?.access_token)
-    } catch(e) {
-      console.log(e)
-    }
-  }
-  const detailDriver = async (id, token) => {
-    try {
-      const { data } = await axios({
-        url: baseUrl + "/users/" + id,
-        method: "GET",
-        headers: { access_token: token }
-      })
-      setDriver(data.driver)
-    } catch (e) {
-      console.log(e)
-    }
-  }
+  const dispatch = useDispatch()
+  const driver = useSelector((state) => {
+      return state.userReducer.driver
+  })
+  
   useFocusEffect(
-      React.useCallback(() => {
-        getData()
-      }, [])
-  )
-
-  const [emit, useEmit] = useState('')
-  const [socket, setSocket] = useState('')
-  let count = 0
-  // untuk log, test update socket
-  // useEffect(() => {
-  //   console.log(socket)
-  // }, [socket])
-
-  const sendInterval = () => {
-    count++
-    socketInstance.emit('send:interval', count)
-  }
-
-  const start = () => {
-    useEmit(setInterval(() => {
-      sendInterval()
-    }, 2000))
-  }
-
-  const stop = () => {
-    clearInterval(emit)
-    useEmit('')
-    setSocket('')
-  }
+    React.useCallback(() => {
+      dispatch(getDataUser())
+    }, [])
+  );
 
   return (
     <View

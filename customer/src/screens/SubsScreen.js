@@ -8,35 +8,21 @@ import {useFocusEffect} from "@react-navigation/native";
 import * as React from "react";
 import moment from "moment";
 
+import { useDispatch, useSelector } from "react-redux"
+import { getDataUser } from "../store/actions/userAction";
+
 function SubsScreen({navigation}) {
-    const [detail, setDetail] = useState({})
-    const date = moment(detail.Subscription?.endDate).format('MMMM D, YYYY')
-    const getData = async () => {
-        try {
-            const jsonValue = await AsyncStorage.getItem('@storage_Key')
-            let value = JSON.parse(jsonValue)
-            await detailCustomer(value?.id, value?.access_token)
-        } catch(e) {
-            console.log(e)
-        }
-    }
-    const detailCustomer = async (id, token) => {
-        try {
-            const { data } = await axios({
-                url: baseUrl + "/users/" + id,
-                method: "GET",
-                headers: { access_token: token }
-            })
-            setDetail(data.user)
-        } catch (e) {
-            console.log(e)
-        }
-    }
+    const dispatch = useDispatch()
+    const { user } = useSelector((state) => {
+        return state.userReducer
+    })
+    const date = moment(user.Subscription?.endDate).format('MMMM D, YYYY')
+
     useFocusEffect(
         React.useCallback(() => {
-            getData()
+            dispatch(getDataUser())
         }, [])
-    )
+    );
     return (
         <View style={styles.container}>
             <View style={styles.subsView}>

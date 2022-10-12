@@ -3,14 +3,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {Picker} from '@react-native-picker/picker';
 import {useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 import {useFocusEffect} from "@react-navigation/native";
 import * as React from "react";
-import {baseUrl} from "../constants/baseUrl";
+
+import { useDispatch, useSelector } from "react-redux"
+import { getDataDriver, patchStatusDriver } from "../store/actions/driverAction";
 
 export default function ProfileScreen({ navigation }) {
+    const dispatch = useDispatch()
+    const { driver } = useSelector((state) => {
+        return state.driverReducer
+    })
+
     const [status, setStatus] = useState("Available");
-    const [detail, setDetail] = useState({})
 
     const logout = async () => {
         try {
@@ -22,33 +27,15 @@ export default function ProfileScreen({ navigation }) {
     }
     const getData = async () => {
         try {
-            const jsonValue = await AsyncStorage.getItem('@storage_Key')
-            let value = JSON.parse(jsonValue)
-            await detailDriver(value?.id)
+            dispatch(getDataDriver())
         } catch(e) {
-            console.log(e)
-        }
-    }
-    const detailDriver = async (id) => {
-        try {
-            const { data } = await axios({
-                url: baseUrl + "/drivers/" + id,
-                method: "GET"
-            })
-            setDetail(data)
-        } catch (e) {
             console.log(e)
         }
     }
 
     const updateStatus = async (value) => {
         try {
-            const { data } = await axios({
-                url: baseUrl + "/drivers/" + detail.id,
-                method: "PATCH",
-                data: { driverStatus: value }
-            })
-            console.log(data)
+            dispatch(patchStatusDriver(value))
         } catch (e) {
             console.log(e)
         }
@@ -66,8 +53,8 @@ export default function ProfileScreen({ navigation }) {
             <View style={styles.card}>
                 {/* profile */}
                 <View style={styles.cardProfile}>
-                    <Image source={{uri: `${detail?.imgUrl}`}} style={{height: 80, width: 80, borderRadius: 50}} />
-                    <Text style={styles.driverText}>Mr. {detail?.fullName}</Text>
+                    <Image source={{uri: `${driver?.imgUrl}`}} style={{height: 80, width: 80, borderRadius: 50}} />
+                    <Text style={styles.driverText}>Mr. {driver?.fullName}</Text>
                     <View style={{flexDirection: "row", width: "100%", justifyContent: "center" }}>
                         <View style={{borderRadius: 10, borderWidth: 1, borderColor: '#bdc3c7', overflow: 'hidden', justifyContent: "center", alignItems: "center", width: 160}}>
                             <Picker
@@ -89,7 +76,7 @@ export default function ProfileScreen({ navigation }) {
                 </View>
                 {/*  balance  */}
                 <View style={styles.cardBalance}>
-                    <Text style={styles.modalText}>Balance: Rp. {detail?.balance}</Text>
+                    <Text style={styles.modalText}>Balance: Rp. {driver?.balance}</Text>
                 </View>
                 {/*  schedule  */}
                 <View style={styles.cardSchedule}>

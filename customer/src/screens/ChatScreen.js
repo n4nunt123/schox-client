@@ -1,72 +1,42 @@
 import * as React from "react";
 import * as TalkRn from '@talkjs/expo';
-import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {useFocusEffect} from "@react-navigation/native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from "axios";
 
-import { baseUrl } from '../constants/baseUrl'
+import { useDispatch, useSelector } from "react-redux"
+import { getDataUser } from "../store/actions/userAction";
 
 export default function TalkOne() {
-  const [driver, setDriver] = useState({
-    id: '',
-    name: '',
-    email: '',
-    photoUrl: ''
+  const dispatch = useDispatch()
+  const { driver, user } = useSelector((state) => {
+      return state.userReducer
   })
-  const [customer, setCustomer] = useState({
-    id: '',
-    name: '',
-    email: '',
-    photoUrl: ''
-  })
-
-  const getData = async() => {
-    try {
-      const jsonValue = await AsyncStorage.getItem('@storage_Key')
-      let value = JSON.parse(jsonValue)
-      await getIdentity(value?.id, value?.access_token)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  const getIdentity = async (id, access_token) => {
-    try {
-      const { data } = await axios({
-        method: 'GET',
-        url: `${baseUrl}/users/chat/${id}`,
-        headers: { access_token }
-      })
-      setCustomer({
-        id: '987654321',
-        name: data.fullName,
-        email: data.email,
-        photoUrl: 'https://cdn.discordapp.com/attachments/1007286935926095954/1011903660055343204/OMOCAT_Logo.png'
-      })
-      setDriver({
-        id: '123456789',
-        name: data.Subscription.Driver.fullName,
-        email: data.Subscription.Driver.email,
-        photoUrl: data.Subscription.Driver.imgUrl
-      })
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
+  
   useFocusEffect(
     React.useCallback(() => {
-      getData();
+      dispatch(getDataUser())
     }, [])
   );
+
+  const drivers = {
+    id: '123456789',
+    name: driver.fullName,
+    email: driver.email,
+    photoUrl: driver.imgUrl
+  }
+
+  const customer = {
+    id: '987654321',
+    name: user.fullName,
+    email: user.email,
+    photoUrl: 'https://cdn.discordapp.com/attachments/1007286935926095954/1011903660055343204/OMOCAT_Logo.png'
+  }
   
   const conversationBuilder = TalkRn.getConversationBuilder(
-    TalkRn.oneOnOneId(driver, customer)
+    TalkRn.oneOnOneId(drivers, customer)
   );
 
-  conversationBuilder.setParticipant(driver);
+  conversationBuilder.setParticipant(drivers);
   conversationBuilder.setParticipant(customer);
 
   return (
