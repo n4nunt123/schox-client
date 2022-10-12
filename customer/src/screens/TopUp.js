@@ -1,36 +1,41 @@
 import { StatusBar } from "expo-status-bar";
 import {
-  Image,
   StyleSheet,
   Text,
   View,
   TextInput,
-  Button,
   TouchableOpacity,
   Alert,
 } from "react-native";
 import { useState } from "react";
 import axios from "axios";
 import {baseUrl} from "../constants/baseUrl";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 export default function TopUp({ navigation }) {
   const [value, setValue] = useState("");
 
   const onSubmit = (value) => async () => {
     try {
+
       if (value < 100000 || !value) {
         Alert.alert("Alert", "Minimum Top up is Rp 100.000");
       } else {
+        const jsonValue = await AsyncStorage.getItem('@storage_Key')
+        let token = JSON.parse(jsonValue)
+
         const id = new Date().getTime();
         const order = `${id}--testing`;
 
         const { data } = await axios({
-          url: baseUrl + "/users/balances",
+          url: baseUrl + "/users/topup",
           method: "post",
           data: {
             order: order,
             gross: value,
           },
+          headers: { access_token: token?.access_token }
         });
         navigation.navigate("Midtrans", { url: data.redirect_url });
       }
