@@ -5,10 +5,10 @@ import * as Location from 'expo-location';
 import { useState} from "react";
 import * as React from 'react';
 import {useFocusEffect} from "@react-navigation/native";
-
 import { useDispatch, useSelector } from "react-redux"
 import { getDataDriver } from "../store/actions/driverAction";
-
+import {baseUrl} from "../constants/baseUrl";
+import moment from "moment";
 
 const mapRef = React.createRef();
 export default function HomeScreen({navigation, route}) {
@@ -22,6 +22,12 @@ export default function HomeScreen({navigation, route}) {
         latitude: 0
     })
 
+    const [detail, setDetail] = useState({})
+    const [isBooked, setIsBooked] = useState(null)
+    const [endDate, setEndDate] = useState("")
+    const date = moment(endDate).format('MMMM D, YYYY')
+
+
     const getLocation = async() => {
         try {
             let { status } = await Location.requestForegroundPermissionsAsync();
@@ -33,6 +39,8 @@ export default function HomeScreen({navigation, route}) {
                 enableHighAccuracy: true,
                 timeInterval: 5
             });
+            await mapRef.current.animateCamera({center: {"latitude":location.coords.latitude, "longitude": location.coords.longitude}})
+
             setOrigin({longitude: location.coords.longitude, latitude: location.coords.latitude});
         } catch (e) {
             console.log(e)
@@ -42,7 +50,46 @@ export default function HomeScreen({navigation, route}) {
         try {
             dispatch(getDataDriver())
             await mapRef.current.animateCamera({center: {"latitude":origin.latitude, "longitude": origin.longitude}})
+            const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            let value = JSON.parse(jsonValue)
+            await checkStatus(value?.id)
         } catch(e) {
+            console.log(e)
+        }
+    }
+
+    const checkStatus = async (id) => {
+        try {
+            const {data} = await axios({
+                url: baseUrl + "/drivers/subscriptions/" + id,
+                method: "GET",
+            })
+
+            if (data.message === "BOOKED") {
+                setIsBooked("BOOKED")
+                setEndDate(data.subsDetail.endDate)
+            } else {
+                setIsBooked(null)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const checkSubs = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            let value = JSON.parse(jsonValue)
+            if (moment(endDate).format('MMMM D, YYYY') === moment().format('MMMM D, YYYY')) {
+                const {data} = await axios({
+                    url: baseUrl + "/drivers/subscriptions/" + value.id,
+                    method: "DELETE"
+                })
+                console.log(data, "<<<")
+            } else {
+                console.log("belum habis")
+            }
+        } catch (e) {
             console.log(e)
         }
     }
@@ -63,9 +110,16 @@ export default function HomeScreen({navigation, route}) {
                 </View>
                 <View style={{flex: 4, flexDirection: "column", marginHorizontal: 30, paddingLeft: 30}}>
                     <Text style={{fontSize: 20, fontWeight: "bold"}}>Hello, {driver?.fullName}</Text>
-                    <View style={[{borderRadius: 30, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, driver.driverStatus === "Available" ? {backgroundColor: 'green'} : {backgroundColor: 'grey'}]}>
-                        <Text style={{color: "white"}}>{driver?.driverStatus === "Available" ? driver?.driverStatus : "Non Available"}</Text>
-                    </View>
+                    {!isBooked ?
+                        <View style={[{borderRadius: 30, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, detail.driverStatus === "Available" ? {backgroundColor: 'green'} : {backgroundColor: 'grey'}]}>
+                            <Text style={{color: "white"}}>{driver?.driverStatus === "Available" ? driver?.driverStatus : "Non Available"}</Text>
+                        </View>
+                        :
+                        <View style={[{borderRadius: 10, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, detail.driverStatus === "BOOKED" ? {backgroundColor: 'lightgreen'} : null]}>
+                            <Text style={{color: "white"}}>You are booked until</Text>
+                            <Text style={{color: "white", fontWeight: "bold"}}>{endDate ? date : null}</Text>
+                        </View>
+                    }
                 </View>
             </Pressable>
             <View style={styles.bottomCard}>

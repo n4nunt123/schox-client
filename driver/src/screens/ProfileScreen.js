@@ -1,21 +1,26 @@
-import {Text, View, StyleSheet, Image, ScrollView, TouchableHighlight} from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {Image, ScrollView, StyleSheet, Text, TouchableHighlight, View} from "react-native";
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {Picker} from '@react-native-picker/picker';
+import * as React from "react";
 import {useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useFocusEffect} from "@react-navigation/native";
-import * as React from "react";
-
+import {baseUrl} from "../constants/baseUrl";
 import { useDispatch, useSelector } from "react-redux"
 import { getDataDriver, patchStatusDriver } from "../store/actions/driverAction";
 
 export default function ProfileScreen({ navigation }) {
+
     const dispatch = useDispatch()
     const { driver } = useSelector((state) => {
         return state.driverReducer
     })
 
+
     const [status, setStatus] = useState("Available");
+    const [isBooked, setIsBooked] = useState(null)
+    const [subsDetail, setSubsDetail] = useState({})
+    const [userDetail, setUserDetail] = useState({})
 
     const logout = async () => {
         try {
@@ -28,7 +33,29 @@ export default function ProfileScreen({ navigation }) {
     const getData = async () => {
         try {
             dispatch(getDataDriver())
+            const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            let value = JSON.parse(jsonValue)
+            await checkStatus(value?.id)
         } catch(e) {
+            console.log(e)
+        }
+    }
+
+
+    const checkStatus = async (id) => {
+        try {
+            const {data} = await axios({
+                url: baseUrl + "/drivers/subscriptions/" + id,
+                method: "GET",
+            })
+            if (data.message === "BOOKED") {
+                setIsBooked("BOOKED")
+                setSubsDetail(data.subsDetail)
+                setUserDetail(data.user)
+            } else {
+                setIsBooked(null)
+            }
+        } catch (e) {
             console.log(e)
         }
     }
@@ -40,6 +67,7 @@ export default function ProfileScreen({ navigation }) {
             console.log(e)
         }
     }
+
     useFocusEffect(
         React.useCallback(() => {
             getData()
@@ -53,40 +81,55 @@ export default function ProfileScreen({ navigation }) {
             <View style={styles.card}>
                 {/* profile */}
                 <View style={styles.cardProfile}>
-                    <Image source={{uri: `${driver?.imgUrl}`}} style={{height: 80, width: 80, borderRadius: 50}} />
+                    <Image source={{uri: `${driver?.imgUrl}`}} style={{height: 80, width: 80, borderRadius: 50}}/>
                     <Text style={styles.driverText}>Mr. {driver?.fullName}</Text>
-                    <View style={{flexDirection: "row", width: "100%", justifyContent: "center" }}>
-                        <View style={{borderRadius: 10, borderWidth: 1, borderColor: '#bdc3c7', overflow: 'hidden', justifyContent: "center", alignItems: "center", width: 160}}>
+                    <View style={{flexDirection: "row", width: "100%", justifyContent: "center"}}>
+                        {!isBooked && <View style={{
+                            borderRadius: 10,
+                            borderWidth: 1,
+                            borderColor: '#bdc3c7',
+                            overflow: 'hidden',
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: 160
+                        }}>
                             <Picker
-                                style={[styles.button, {height:20, width:"100%"}]}
+                                style={[styles.button, {height: 20, width: "100%"}]}
                                 selectedValue={status}
                                 onValueChange={(itemValue, itemIndex) => {
                                     setStatus(itemValue)
                                     updateStatus(itemValue)
                                 }
                                 }>
-                                <Picker.Item label="Available" value="Available" />
-                                <Picker.Item label="Non Available" value="NonAvailable" />
+                                <Picker.Item label="Available" value="Available"/>
+                                <Picker.Item label="Non Available" value="NonAvailable"/>
                             </Picker>
-                        </View>
-                        <TouchableHighlight onPress={() => logout()} style={[styles.button,styles.buttonLogout]}>
+                        </View>}
+                        <TouchableHighlight onPress={() => logout()} style={[styles.button, styles.buttonLogout]}>
                             <Text style={{color: "white"}}>Logout</Text>
                         </TouchableHighlight>
                     </View>
                 </View>
                 {/*  balance  */}
                 <View style={styles.cardBalance}>
-                    <Text style={styles.modalText}>Balance: Rp. {driver?.balance}</Text>
+                    <Text style={styles.modalText}>Balance: Rp. {detail.balance?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</Text>
                 </View>
                 {/*  schedule  */}
                 <View style={styles.cardSchedule}>
                     <ScrollView style={{width: "100%", height: "100%"}}>
-                        <View style={styles.schedule}>
-                            <Text>Schedule</Text>
-                        </View>
-                        <View style={styles.schedule}>
-                            <Text>Schedule</Text>
-                        </View>
+                        {!isBooked ?
+                            <View style={styles.noschedule}>
+                                <Text style={{fontWeight: "bold", color: "grey"}}>Currently, you have no customer</Text>
+                            </View> :
+                            <>
+                                <View style={styles.schedule}>
+                                    <Text>To School: {subsDetail?.toShoolTime}</Text>
+                                </View>
+                                <View style={styles.schedule}>
+                                    <Text>Back to home: {subsDetail?.goHomeTime}</Text>
+                                </View>
+                            </>
+                        }
                     </ScrollView>
                 </View>
             </View>
@@ -189,12 +232,21 @@ const styles = StyleSheet.create({
         height: "100%"
     },
     schedule: {
-        height: 200,
+        height: 100,
         backgroundColor: "#DEE9FF",
+        borderRadius: 20,
+        justifyContent: "center",
+        alignItems: "center",
+        marginVertical: 5,
+        marginHorizontal: "5%"
+    },
+    noschedule: {
+        height: 200,
+        // backgroundColor: "#DEE9FF",
         borderRadius: 30,
         justifyContent: "center",
         alignItems: "center",
         marginVertical: 5,
         marginHorizontal: "5%"
-    }
+    },
 })

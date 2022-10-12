@@ -51,12 +51,17 @@ export default function TopUp({ navigation }) {
           <Text style={styles.hallo}>Enter Top up amount</Text>
         </View>
       </View>
-      <TextInput
-        style={styles.input}
-        onChangeText={setValue}
-        placeholder="Rp 0"
-        keyboardType="numeric"
-      />
+      <View style={styles.inputcontainer}>
+        <TextInput
+          style={styles.input}
+          onChangeText={setValue}
+          placeholder="Rp 0"
+          keyboardType="numeric"
+        />
+      </View>
+      <View style={{flexDirection: "row-reverse"}}>
+      <Text style={styles.description}>Min Rp 100.000</Text>
+      </View>
       <StatusBar style="auto" />
       <TouchableOpacity onPress={onSubmit(value)}>
         <View style={styles.button}>
@@ -70,13 +75,13 @@ export default function TopUp({ navigation }) {
 const styles = StyleSheet.create({
   containerPhoto: {
     flex: 1,
+    padding: 10
   },
   userView: {
-    width: "100%",
+    width: "80%",
     flexDirection: "row",
     marginTop: 20,
-    marginBottom: 20,
-    paddingHorizontal: 20,
+    marginBottom: 10,
   },
   hallo: {
     color: "#2B377F",
@@ -84,12 +89,22 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 2,
     marginTop: 5,
+    paddingHorizontal: 35
+  },
+  inputcontainer: {
+    width: '84%',
+    alignItems: "center",
+    justifyContent: "center"
   },
   input: {
     height: 40,
-    margin: 12,
     borderWidth: 1,
     padding: 10,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    borderColor: '#a0acda',
+    width: '100%',
+    marginLeft: 60
   },
   button: {
     paddingVertical: 14,
@@ -106,4 +121,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: "center",
   },
+  description: {
+    color: '#ec5f58',
+    fontSize: 12,
+    marginBottom: 10,
+    paddingRight: 30,
+    marginTop: 5
+  }
 });

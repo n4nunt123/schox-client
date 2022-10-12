@@ -12,11 +12,31 @@ import { useDispatch, useSelector } from "react-redux"
 import { getDataUser } from "../store/actions/userAction";
 
 function SubsScreen({navigation}) {
+
     const dispatch = useDispatch()
     const { user } = useSelector((state) => {
         return state.userReducer
     })
     const date = moment(user.Subscription?.endDate).format('MMMM D, YYYY')
+
+    const checkDate = async () => {
+        try {
+            // const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            // let value = JSON.parse(jsonValue)
+            // if (moment() === moment(detail.Subscription?.endDate)) {
+            //     await axios({
+            //         url: baseUrl + "/users/subscriptions/" + value.id,
+            //         method: "patch",
+            //         headers: { access_token: value?.access_token },
+            //         body: {status: "nonactive"}
+            //     })
+            // } else {
+            //     console.log("belum selesai")
+            // }
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     useFocusEffect(
         React.useCallback(() => {
@@ -37,6 +57,7 @@ function SubsScreen({navigation}) {
                     <Text style={styles.dateText}>{date}</Text>
                 </View>
             </View>
+
             <StatusBar style="auto" />
         </View>
     );

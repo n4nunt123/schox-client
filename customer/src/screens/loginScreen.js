@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 30,
     width: "90%",
+    color: "#4c4b49"
   },
   logo: {
     width: 130,

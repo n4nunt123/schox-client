@@ -1,28 +1,27 @@
 import * as React from "react";
-import { StyleSheet} from 'react-native';
+import { StyleSheet } from "react-native";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Image } from "react-native";
 import HomeNavigator from "./HomeNavigator";
 import SubscriptionNavigator from "./SubNavigator";
 import ProfileNavigator from "./ProfileNavigator";
-import {useEffect} from "react";
+import { useEffect } from "react";
 
 const Tab = createBottomTabNavigator();
 
-export default function HomeTab({navigation}) {
-    const getData = async () => {
-        try {
-            const jsonValue = await AsyncStorage.getItem('@storage_Key')
-            let value = JSON.parse(jsonValue)
-            if (!value) navigation.navigate("login")
-        } catch(e) {
-            console.log(e)
-        }
+export default function HomeTab({ navigation }) {
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@storage_Key");
+      let value = JSON.parse(jsonValue);
+      if (!value) navigation.navigate("login");
+    } catch (e) {
+      console.log(e);
     }
-
+  };
     useEffect(() => {
         getData()
     }, [])
@@ -106,21 +105,20 @@ export default function HomeTab({navigation}) {
 }
 
 const styles = StyleSheet.create({
-    showTabStyles: {
-        paddingTop: 7,
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-        borderLeftWidth: 0.2,
-        borderRightWidth: 0.2,
-        position: "absolute",
-        overflow: "hidden",
-        height: 90,
-        elevation: 0,
-        shadowColor: "#000000",
-        display: "flex"
-    },
-    hideTabStyles: {
-        display: "none"
-    }
-})
-
+  showTabStyles: {
+    paddingTop: 7,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    borderLeftWidth: 0.2,
+    borderRightWidth: 0.2,
+    position: "absolute",
+    overflow: "hidden",
+    height: 90,
+    elevation: 0,
+    shadowColor: "#000000",
+    display: "flex",
+  },
+  hideTabStyles: {
+    display: "none",
+  },
+});
