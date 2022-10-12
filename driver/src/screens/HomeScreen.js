@@ -8,6 +8,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useFocusEffect} from "@react-navigation/native";
 import {baseUrl} from "../constants/baseUrl";
+import moment from "moment";
 
 const mapRef = React.createRef();
 export default function HomeScreen({navigation, route}) {
@@ -16,6 +17,9 @@ export default function HomeScreen({navigation, route}) {
         latitude: 0
     })
     const [detail, setDetail] = useState({})
+    const [isBooked, setIsBooked] = useState(null)
+    const [endDate, setEndDate] = useState("")
+    const date = moment(endDate).format('MMMM D, YYYY')
 
     const getLocation = async() => {
         try {
@@ -28,6 +32,8 @@ export default function HomeScreen({navigation, route}) {
                 enableHighAccuracy: true,
                 timeInterval: 5
             });
+            await mapRef.current.animateCamera({center: {"latitude":location.coords.latitude, "longitude": location.coords.longitude}})
+
             setOrigin({longitude: location.coords.longitude, latitude: location.coords.latitude});
         } catch (e) {
             console.log(e)
@@ -38,7 +44,7 @@ export default function HomeScreen({navigation, route}) {
             const jsonValue = await AsyncStorage.getItem('@storage_Key')
             let value = JSON.parse(jsonValue)
             await detailDriver(value?.id)
-            await mapRef.current.animateCamera({center: {"latitude":origin.latitude, "longitude": origin.longitude}})
+            await checkStatus(value?.id)
         } catch(e) {
             console.log(e)
         }
@@ -50,6 +56,24 @@ export default function HomeScreen({navigation, route}) {
                 method: "GET"
             })
             setDetail(data)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const checkStatus = async (id) => {
+        try {
+            const {data} = await axios({
+                url: baseUrl + "/drivers/subscriptions/" + id,
+                method: "GET",
+            })
+
+            if (data.message === "BOOKED") {
+                setIsBooked("BOOKED")
+                setEndDate(data.endDate)
+            } else {
+                setIsBooked(null)
+            }
         } catch (e) {
             console.log(e)
         }
@@ -71,9 +95,16 @@ export default function HomeScreen({navigation, route}) {
                 </View>
                 <View style={{flex: 4, flexDirection: "column", marginHorizontal: 30, paddingLeft: 30}}>
                     <Text style={{fontSize: 20, fontWeight: "bold"}}>Hello, {detail?.fullName}</Text>
-                    <View style={[{borderRadius: 30, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, detail.driverStatus === "Available" ? {backgroundColor: 'green'} : {backgroundColor: 'grey'}]}>
-                        <Text style={{color: "white"}}>{detail?.driverStatus === "Available" ? detail?.driverStatus : "Non Available"}</Text>
-                    </View>
+                    {!isBooked ?
+                        <View style={[{borderRadius: 30, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, detail.driverStatus === "Available" ? {backgroundColor: 'green'} : {backgroundColor: 'grey'}]}>
+                            <Text style={{color: "white"}}>{detail?.driverStatus === "Available" ? detail?.driverStatus : "Non Available"}</Text>
+                        </View>
+                        :
+                        <View style={[{borderRadius: 10, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, detail.driverStatus === "BOOKED" ? {backgroundColor: 'lightgreen'} : null]}>
+                            <Text style={{color: "white"}}>You are booked until</Text>
+                            <Text style={{color: "white", fontWeight: "bold"}}>{endDate ? date : null}</Text>
+                        </View>
+                    }
                 </View>
             </Pressable>
             <View style={styles.bottomCard}>

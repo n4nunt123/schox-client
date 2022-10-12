@@ -77,34 +77,14 @@ export default function DriverScreen({navigation}) {
       <View style={styles.profile}>
         <Image source={{uri: `${driver.imgUrl}`}} style={styles.profileIcon} />
         <Text style={styles.name}>{driver.fullName}</Text>
-        <Text style={styles.license}>{driver.carLicenseNumber}</Text>
-      </View>
-
-      <View>
-        <Text style={styles.title}>Detail Perjalanan</Text>
+        <Text style={styles.license}>{driver.phoneNumber}</Text>
       </View>
       <View style={styles.details}>
-        <View style={styles.detail}>
-          <Image source={arrow} style={styles.arrowIcon} />
-          <View>
-            <Text style={styles.description}>Lokasi jemput</Text>
-            <Text style={{ color: "#0d155a" }}>
-              Jalan Mangga 2, lewatin rumput
-            </Text>
-          </View>
-        </View>
-        <Image source={dot} style={styles.dotIcon} />
-        <Image source={dot} style={styles.dotIcon} />
-        <Image source={dot} style={[styles.dotIcon, styles.lastChild]} />
-        <View style={styles.detail}>
-          <Image source={arrive} style={styles.arrowIcon} />
-          <View>
-            <Text style={styles.description}>Lokasi jemput</Text>
-            <Text style={{ color: "#0d155a" }}>
-              Jalan Jeruk 5, lewatin macan
-            </Text>
-          </View>
-        </View>
+        <Text style={styles.title}>Vehicle Information</Text>
+        <Image source={{uri: `${driver.carImgUrl}`}} style={styles.arrowIcon} />
+        <Text style={styles.cartype}>{driver.carType}</Text>
+        <Text style={styles.license}>Police Number : {driver.carLicenseNumber}</Text>
+
       </View>
 
       <Pressable style={styles.control} onPress={() => navigation.navigate('Chat')}>
@@ -119,29 +99,33 @@ export default function DriverScreen({navigation}) {
 const styles = StyleSheet.create({
   profile: {
     flex: 1,
-    marginTop: 25,
+    marginTop: 50,
     alignItems: "center",
   },
   profileIcon: {
-    width: 100,
-    height: 100,
+    width: 140,
+    height: 140,
     borderRadius: 20
   },
   name: {
     color: "#0d155a",
     fontSize: 22,
   },
+  cartype: {
+    color: "#999999",
+    fontSize: 12,
+  },
   license: {
     color: "#999999",
     fontSize: 12,
+    marginBottom: 50
   },
   detail: {
     flexDirection: "row",
   },
   arrowIcon: {
-    width: 30,
-    height: 30,
-    marginRight: 10,
+    width: 180,
+    height: 120,
   },
   description: {
     fontWeight: "100",
@@ -151,21 +135,14 @@ const styles = StyleSheet.create({
   title: {
     color: "#0d155a",
     fontSize: 17,
-    marginBottom: 30,
+    marginBottom: 10,
   },
   details: {
     flex: 1.5,
+    alignItems: "center",
+    justifyContent: "center"
   },
-  dot: {
-    color: "#72769f",
-    padding: 10,
-  },
-  dotIcon: {
-    width: 10,
-    height: 10,
-    marginLeft: 10,
-    marginTop: 7,
-  },
+
   lastChild: {
     marginBottom: 7,
   },
