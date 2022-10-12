@@ -51,6 +51,7 @@ export default function TripScreen() {
     return (
         <View style={styles.container}>
             <Text>TRIP SCREEN</Text>
+            <MapView style={styles.map} />
             {/* <Text>{JSON.stringify(driverCoordinate)}</Text> */}
             
         </View>
@@ -66,6 +67,6 @@ const styles = StyleSheet.create({
     map: {
         height: 500,
         width: "95%",
-        marginTop: 80
+        marginTop: 80,
     },
 });
