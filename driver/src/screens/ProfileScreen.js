@@ -1,16 +1,18 @@
-import {Text, View, StyleSheet, Image, ScrollView, TouchableHighlight} from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {Image, ScrollView, StyleSheet, Text, TouchableHighlight, View} from "react-native";
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {Picker} from '@react-native-picker/picker';
+import * as React from "react";
 import {useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import {useFocusEffect} from "@react-navigation/native";
-import * as React from "react";
 import {baseUrl} from "../constants/baseUrl";
 
-export default function ProfileScreen({ navigation }) {
+
+export default function ProfileScreen({navigation}) {
     const [status, setStatus] = useState("Available");
     const [detail, setDetail] = useState({})
+    const [isBooked, setIsBooked] = useState(null)
 
     const logout = async () => {
         try {
@@ -25,13 +27,14 @@ export default function ProfileScreen({ navigation }) {
             const jsonValue = await AsyncStorage.getItem('@storage_Key')
             let value = JSON.parse(jsonValue)
             await detailDriver(value?.id)
-        } catch(e) {
+            await checkStatus(value?.id)
+        } catch (e) {
             console.log(e)
         }
     }
     const detailDriver = async (id) => {
         try {
-            const { data } = await axios({
+            const {data} = await axios({
                 url: baseUrl + "/drivers/" + id,
                 method: "GET"
             })
@@ -41,12 +44,29 @@ export default function ProfileScreen({ navigation }) {
         }
     }
 
+    const checkStatus = async (id) => {
+        try {
+            const {data} = await axios({
+                url: baseUrl + "/drivers/subscriptions/" + id,
+                method: "GET",
+            })
+            console.log(data)
+            if (data.message === "BOOKED") {
+                setIsBooked("BOOKED")
+            } else {
+                setIsBooked(null)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     const updateStatus = async (value) => {
         try {
-            const { data } = await axios({
+            const {data} = await axios({
                 url: baseUrl + "/drivers/" + detail.id,
                 method: "PATCH",
-                data: { driverStatus: value }
+                data: {driverStatus: value}
             })
             console.log(data)
         } catch (e) {
@@ -58,6 +78,7 @@ export default function ProfileScreen({ navigation }) {
             getData()
         }, [])
     )
+    console.log(isBooked)
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topCard}>
@@ -66,23 +87,31 @@ export default function ProfileScreen({ navigation }) {
             <View style={styles.card}>
                 {/* profile */}
                 <View style={styles.cardProfile}>
-                    <Image source={{uri: `${detail?.imgUrl}`}} style={{height: 80, width: 80, borderRadius: 50}} />
+                    <Image source={{uri: `${detail?.imgUrl}`}} style={{height: 80, width: 80, borderRadius: 50}}/>
                     <Text style={styles.driverText}>Mr. {detail?.fullName}</Text>
-                    <View style={{flexDirection: "row", width: "100%", justifyContent: "center" }}>
-                        <View style={{borderRadius: 10, borderWidth: 1, borderColor: '#bdc3c7', overflow: 'hidden', justifyContent: "center", alignItems: "center", width: 160}}>
+                    <View style={{flexDirection: "row", width: "100%", justifyContent: "center"}}>
+                        {!isBooked && <View style={{
+                            borderRadius: 10,
+                            borderWidth: 1,
+                            borderColor: '#bdc3c7',
+                            overflow: 'hidden',
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: 160
+                        }}>
                             <Picker
-                                style={[styles.button, {height:20, width:"100%"}]}
+                                style={[styles.button, {height: 20, width: "100%"}]}
                                 selectedValue={status}
                                 onValueChange={(itemValue, itemIndex) => {
                                     setStatus(itemValue)
                                     updateStatus(itemValue)
                                 }
                                 }>
-                                <Picker.Item label="Available" value="Available" />
-                                <Picker.Item label="Non Available" value="NonAvailable" />
+                                <Picker.Item label="Available" value="Available"/>
+                                <Picker.Item label="Non Available" value="NonAvailable"/>
                             </Picker>
-                        </View>
-                        <TouchableHighlight onPress={() => logout()} style={[styles.button,styles.buttonLogout]}>
+                        </View>}
+                        <TouchableHighlight onPress={() => logout()} style={[styles.button, styles.buttonLogout]}>
                             <Text style={{color: "white"}}>Logout</Text>
                         </TouchableHighlight>
                     </View>
@@ -94,12 +123,19 @@ export default function ProfileScreen({ navigation }) {
                 {/*  schedule  */}
                 <View style={styles.cardSchedule}>
                     <ScrollView style={{width: "100%", height: "100%"}}>
-                        <View style={styles.schedule}>
-                            <Text>Schedule</Text>
-                        </View>
-                        <View style={styles.schedule}>
-                            <Text>Schedule</Text>
-                        </View>
+                        {!isBooked ?
+                            <View style={styles.noschedule}>
+                                <Text style={{fontWeight: "bold", color: "grey"}}>Currently, you have no customer</Text>
+                            </View> :
+                            <>
+                                <View style={styles.schedule}>
+                                    <Text>Schedule</Text>
+                                </View>
+                                <View style={styles.schedule}>
+                                    <Text>Schedule</Text>
+                                </View>
+                            </>
+                        }
                     </ScrollView>
                 </View>
             </View>
@@ -202,12 +238,21 @@ const styles = StyleSheet.create({
         height: "100%"
     },
     schedule: {
-        height: 200,
+        height: 100,
         backgroundColor: "#DEE9FF",
+        borderRadius: 20,
+        justifyContent: "center",
+        alignItems: "center",
+        marginVertical: 5,
+        marginHorizontal: "5%"
+    },
+    noschedule: {
+        height: 200,
+        // backgroundColor: "#DEE9FF",
         borderRadius: 30,
         justifyContent: "center",
         alignItems: "center",
         marginVertical: 5,
         marginHorizontal: "5%"
-    }
+    },
 })
