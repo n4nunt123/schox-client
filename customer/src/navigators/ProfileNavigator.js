@@ -6,7 +6,6 @@ import MidtransScreen from "../screens/MidtransScreen";
 import TopUpScreen from "../screens/TopUp";
 
 const Stack = createNativeStackNavigator();
-
 export default function SubscriptionNavigator() {
   return (
     <Stack.Navigator initialRouteName="Profile">
