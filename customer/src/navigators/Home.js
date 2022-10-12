@@ -89,7 +89,18 @@ export default function HomeTab({navigation}) {
                     })}
                 />
                 <Tab.Screen name="Subscription" component={SubscriptionNavigator} />
-                <Tab.Screen name="Profile" component={ProfileNavigator} />
+                <Tab.Screen name="Profile" component={ProfileNavigator} options={({ route }) => ({
+                    tabBarStyle: (route => {
+                        const routeName = getFocusedRouteNameFromRoute(route)
+                        switch (routeName) {
+                            case 'TopUp':
+                            case 'Midtrans':
+                                return styles.hideTabStyles
+                            default:
+                                return styles.showTabStyles
+                        }
+                    })(route),
+                })} />
             </Tab.Navigator>
     );
 }
