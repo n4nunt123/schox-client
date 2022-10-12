@@ -8,6 +8,7 @@ import {useFocusEffect} from "@react-navigation/native";
 import {baseUrl} from "../constants/baseUrl";
 import { useDispatch, useSelector } from "react-redux"
 import { getDataDriver, patchStatusDriver } from "../store/actions/driverAction";
+import axios from "axios";
 
 export default function ProfileScreen({ navigation }) {
 
@@ -109,10 +110,11 @@ export default function ProfileScreen({ navigation }) {
                             <Text style={{color: "white"}}>Logout</Text>
                         </TouchableHighlight>
                     </View>
+                    
                 </View>
                 {/*  balance  */}
                 <View style={styles.cardBalance}>
-                    <Text style={styles.modalText}>Balance: Rp. {detail.balance?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</Text>
+                    <Text style={styles.modalText}>Balance: Rp. {driver.balance?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</Text>
                 </View>
                 {/*  schedule  */}
                 <View style={styles.cardSchedule}>
@@ -122,12 +124,23 @@ export default function ProfileScreen({ navigation }) {
                                 <Text style={{fontWeight: "bold", color: "grey"}}>Currently, you have no customer</Text>
                             </View> :
                             <>
-                                <View style={styles.schedule}>
-                                    <Text>To School: {subsDetail?.toShoolTime}</Text>
+                                <View style={styles.custInfo}>
+                                <Text>CUSTOMER INFORMATION</Text>
+                                <Text>Customer Name: {userDetail?.fullName}</Text>
+                                <Text>Children Name: {userDetail?.childrenName}</Text>
+                                <Text>Phone Number: {userDetail?.phoneNumber}</Text>
+                                <Text>To School: {subsDetail?.toShoolTime}</Text>
+                                <Text>Back to home: {subsDetail?.goHomeTime}</Text>
                                 </View>
-                                <View style={styles.schedule}>
-                                    <Text>Back to home: {subsDetail?.goHomeTime}</Text>
-                                </View>
+                                <TouchableHighlight onPress={() => {
+                                    navigation.navigate({
+                                        name: "Home",
+                                        params: { lat: userDetail?.latitude, lon: userDetail?.longitude },
+                                        merge: true,
+                                    })
+                                }} style={styles.schedule}>
+                                    <Text>PICKUP</Text>
+                                </TouchableHighlight>
                             </>
                         }
                     </ScrollView>
@@ -162,27 +175,6 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         fontSize: 22,
         fontWeight: "bold"
-    },
-    centeredView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 22,
-    },
-    modalView: {
-        margin: 20,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 35,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
     },
     button: {
         borderRadius: 20,
@@ -221,19 +213,36 @@ const styles = StyleSheet.create({
         height: "100%"
     },
     cardBalance: {
-        flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginVertical: 40,
+        marginTop: 50,
+
     },
     cardSchedule: {
         flex: 4,
         width: "100%",
         height: "100%"
     },
+    custInfo: {
+        height: 280,
+        backgroundColor: "#DEE9FF",
+        borderRadius: 20,
+        justifyContent: "center",
+        alignItems: "center",
+        marginVertical: 5,
+        marginHorizontal: "5%",
+    },
+    alignStart: {
+        alignItems: "flex-start",
+        justifyContent: "flex-start"
+    },
+    alignEnd: {
+        alignItems: "flex-end",
+        justifyContent: "flex-end"
+    },
     schedule: {
         height: 100,
-        backgroundColor: "#DEE9FF",
+        backgroundColor: "lightgreen",
         borderRadius: 20,
         justifyContent: "center",
         alignItems: "center",

@@ -9,6 +9,10 @@ import { useDispatch, useSelector } from "react-redux"
 import { getDataDriver } from "../store/actions/driverAction";
 import {baseUrl} from "../constants/baseUrl";
 import moment from "moment";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import MapViewDirections from "react-native-maps-directions";
+
 
 const mapRef = React.createRef();
 export default function HomeScreen({navigation, route}) {
@@ -22,7 +26,11 @@ export default function HomeScreen({navigation, route}) {
         latitude: 0
     })
 
-    const [detail, setDetail] = useState({})
+    const [customerCoord, setCustomerCoord] = useState({
+        latitude: 0,
+        longitude: 0
+    })
+
     const [isBooked, setIsBooked] = useState(null)
     const [endDate, setEndDate] = useState("")
     const date = moment(endDate).format('MMMM D, YYYY')
@@ -85,7 +93,6 @@ export default function HomeScreen({navigation, route}) {
                     url: baseUrl + "/drivers/subscriptions/" + value.id,
                     method: "DELETE"
                 })
-                console.log(data, "<<<")
             } else {
                 console.log("belum habis")
             }
@@ -98,8 +105,16 @@ export default function HomeScreen({navigation, route}) {
         React.useCallback(() => {
             getData()
             getLocation()
-        }, [])
+            if(route.params?.lat) {
+                setCustomerCoord({
+                    longitude: +route.params?.lon,
+                    latitude: +route.params?.lat
+                })
+            }
+        }, [route.params?.lat])
     )
+
+
     return (
         <SafeAreaView style={styles.container}>
             <Pressable onPress={() => {
@@ -111,11 +126,11 @@ export default function HomeScreen({navigation, route}) {
                 <View style={{flex: 4, flexDirection: "column", marginHorizontal: 30, paddingLeft: 30}}>
                     <Text style={{fontSize: 20, fontWeight: "bold"}}>Hello, {driver?.fullName}</Text>
                     {!isBooked ?
-                        <View style={[{borderRadius: 30, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, detail.driverStatus === "Available" ? {backgroundColor: 'green'} : {backgroundColor: 'grey'}]}>
+                        <View style={[{borderRadius: 30, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, driver.driverStatus === "Available" ? {backgroundColor: 'green'} : {backgroundColor: 'grey'}]}>
                             <Text style={{color: "white"}}>{driver?.driverStatus === "Available" ? driver?.driverStatus : "Non Available"}</Text>
                         </View>
                         :
-                        <View style={[{borderRadius: 10, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, detail.driverStatus === "BOOKED" ? {backgroundColor: 'lightgreen'} : null]}>
+                        <View style={[{borderRadius: 10, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, driver.driverStatus === "BOOKED" ? {backgroundColor: 'lightgreen'} : null]}>
                             <Text style={{color: "white"}}>You are booked until</Text>
                             <Text style={{color: "white", fontWeight: "bold"}}>{endDate ? date : null}</Text>
                         </View>
@@ -123,13 +138,31 @@ export default function HomeScreen({navigation, route}) {
                 </View>
             </Pressable>
             <View style={styles.bottomCard}>
-                <MapView ref={mapRef} style={styles.map} provider={PROVIDER_GOOGLE} showsUserLocation={true} zoomControlEnabled={true} >
+                <MapView ref={mapRef} style={styles.map} minZoomLevel={10} provider={PROVIDER_GOOGLE} showsUserLocation={true} zoomControlEnabled={true} >
                     <Marker
                         coordinate={{latitude: origin.latitude,
                             longitude: origin.longitude}}
                         pinColor={'red'}
                         title={'Origin'}
                     />
+                    {route.params?.lat && 
+                        <MapViewDirections
+                            origin={origin}
+                            destination={customerCoord}
+                            apikey={'AIzaSyArgl6qu_3u4Ub5rLzrlQ5YQ3oeOIrrWdE'}
+                            strokeWidth={5}
+                            strokeColor="red"
+                            />
+                    }
+                    {customerCoord && 
+                        <Marker
+                        coordinate={{latitude: customerCoord.latitude,
+                            longitude: customerCoord.longitude}}
+                        pinColor={'lightgreen'}
+                        title={'Customer'}
+                        />
+                        
+                    }
                 </MapView>
             </View>
         </SafeAreaView>
