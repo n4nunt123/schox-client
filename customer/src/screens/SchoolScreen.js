@@ -36,10 +36,10 @@ export default function SchoolScreen() {
       }, [])
   )
   return (
-    <View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: "center", backgroundColor: 'white' }}>
       <Image source={schools} style={styles.icon}/>
       <Text style={styles.name}>{school.name}</Text>
-      <Text style={styles.address}>{school.address}</Text>
+      {/*<Text style={styles.address}>{school.address}</Text>*/}
     </View>
   )
 }
@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
   icon: {
     width: 200,
     height: 200,
-    marginTop: 140
   },
   name: {
     color: '#0d155a',
@@ -56,6 +55,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   address: {
-    color: '#7182c5'
+    color: '#7182c5',
+    width: 300,
   }
 })
