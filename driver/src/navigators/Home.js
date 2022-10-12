@@ -35,6 +35,8 @@ export default function Home({navigation, route}) {
                         iconName = focused ? "user" : "user";
                     } else if (route.name === "Chat") {
                         iconName = focused ? "message-circle" : "message-circle";
+                    } else if (route.name === "Pickup") {
+                        iconName = focused ? "arrow-up-circle" : "arrow-up-circle";
                     }
                     return (
                         <Feather

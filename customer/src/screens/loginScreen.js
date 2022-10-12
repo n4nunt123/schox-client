@@ -46,7 +46,6 @@ export default function LoginScreen({ navigation }) {
       await storeData({id: data.id, access_token: data.access_token})
       navigation.navigate({
         name: "Home",
-        params: {id: data.id, access_token: data.access_token}
       })
     } catch (e) {
       console.log(e);
@@ -131,6 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 30,
     width: "90%",
+    color: "#4c4b49"
   },
   logo: {
     width: 130,

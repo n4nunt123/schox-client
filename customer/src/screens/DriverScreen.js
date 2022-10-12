@@ -1,39 +1,24 @@
-import { useState, useEffect } from "react";
-import { socketInstance } from '../socket/socket'
 import { View, Text, StyleSheet, Image, Pressable, Button } from "react-native";
 import * as React from "react";
-import profile from "../../assets/icon/SeekPng.com_profile-icon-png_9665493.png";
 import arrow from "../../assets/icon/arrow.png";
 import dot from "../../assets/icon/dot.png";
 import arrive from "../../assets/icon/arrive.png";
+import {useFocusEffect} from "@react-navigation/native";
 
-export default function DriverScreen({ navigation }) {
+import { useDispatch, useSelector } from "react-redux"
+import { getDataUser } from "../store/actions/userAction";
 
-  const [emit, useEmit] = useState('')
-  const [socket, setSocket] = useState('')
-  let count = 0
-
-  // untuk log, test update socket
-  useEffect(() => {
-    console.log(socket)
-  }, [socket])
-
-  const sendInterval = () => {
-    count++
-    socketInstance.emit('send:interval', count)
-  }
-
-  const start = () => {
-    useEmit(setInterval(() => {
-      sendInterval()
-    }, 2000))
-  }
-
-  const stop = () => {
-    clearInterval(emit)
-    useEmit('')
-    setSocket('')
-  }
+export default function DriverScreen({navigation}) {
+  const dispatch = useDispatch()
+  const driver = useSelector((state) => {
+      return state.userReducer.driver
+  })
+  
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(getDataUser())
+    }, [])
+  );
 
   return (
     <View
@@ -45,36 +30,16 @@ export default function DriverScreen({ navigation }) {
       }}
     >
       <View style={styles.profile}>
-        <Image source={profile} style={styles.profileIcon} />
-        <Text style={styles.name}>Nama Driver</Text>
-        <Text style={styles.license}>B4312WNN</Text>
-      </View>
-
-      <View>
-        <Text style={styles.title}>Detail Perjalanan</Text>
+        <Image source={{uri: `${driver.imgUrl}`}} style={styles.profileIcon} />
+        <Text style={styles.name}>{driver.fullName}</Text>
+        <Text style={styles.license}>{driver.phoneNumber}</Text>
       </View>
       <View style={styles.details}>
-        <View style={styles.detail}>
-          <Image source={arrow} style={styles.arrowIcon} />
-          <View>
-            <Text style={styles.description}>Lokasi jemput</Text>
-            <Text style={{ color: "#0d155a" }}>
-              Jalan Mangga 2, lewatin rumput
-            </Text>
-          </View>
-        </View>
-        <Image source={dot} style={styles.dotIcon} />
-        <Image source={dot} style={styles.dotIcon} />
-        <Image source={dot} style={[styles.dotIcon, styles.lastChild]} />
-        <View style={styles.detail}>
-          <Image source={arrive} style={styles.arrowIcon} />
-          <View>
-            <Text style={styles.description}>Lokasi jemput</Text>
-            <Text style={{ color: "#0d155a" }}>
-              Jalan Jeruk 5, lewatin macan
-            </Text>
-          </View>
-        </View>
+        <Text style={styles.title}>Vehicle Information</Text>
+        <Image source={{uri: `${driver.carImgUrl}`}} style={styles.arrowIcon} />
+        <Text style={styles.cartype}>{driver.carType}</Text>
+        <Text style={styles.license}>Police Number : {driver.carLicenseNumber}</Text>
+
       </View>
 
       <Pressable style={styles.control} onPress={() => navigation.navigate('Chat')}>
@@ -89,28 +54,33 @@ export default function DriverScreen({ navigation }) {
 const styles = StyleSheet.create({
   profile: {
     flex: 1,
-    marginTop: 25,
+    marginTop: 50,
     alignItems: "center",
   },
   profileIcon: {
-    width: 100,
-    height: 100,
+    width: 140,
+    height: 140,
+    borderRadius: 20
   },
   name: {
     color: "#0d155a",
     fontSize: 22,
   },
+  cartype: {
+    color: "#999999",
+    fontSize: 12,
+  },
   license: {
     color: "#999999",
     fontSize: 12,
+    marginBottom: 50
   },
   detail: {
     flexDirection: "row",
   },
   arrowIcon: {
-    width: 30,
-    height: 30,
-    marginRight: 10,
+    width: 180,
+    height: 120,
   },
   description: {
     fontWeight: "100",
@@ -120,21 +90,14 @@ const styles = StyleSheet.create({
   title: {
     color: "#0d155a",
     fontSize: 17,
-    marginBottom: 30,
+    marginBottom: 10,
   },
   details: {
     flex: 1.5,
+    alignItems: "center",
+    justifyContent: "center"
   },
-  dot: {
-    color: "#72769f",
-    padding: 10,
-  },
-  dotIcon: {
-    width: 10,
-    height: 10,
-    marginLeft: 10,
-    marginTop: 7,
-  },
+
   lastChild: {
     marginBottom: 7,
   },

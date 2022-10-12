@@ -35,7 +35,7 @@ export default function HomeNavigator({ navigation, route }) {
       <Stack.Screen
         name="Driver"
         component={DriverNavigator}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name="School"

@@ -8,7 +8,18 @@ import axios from "axios";
 
 import { baseUrl } from '../constants/baseUrl'
 
+import { useDispatch, useSelector } from "react-redux"
+import { getDataChat } from "../store/actions/driverAction";
+
+
 export default function TalkOne() {
+  const dispatch = useDispatch()
+  const { chat } = useSelector((state) => {
+      return state.driverReducer
+  })
+
+  console.log(chat)
+
   const [driver, setDriver] = useState({
     id: '',
     name: '',
@@ -40,15 +51,15 @@ export default function TalkOne() {
       })
       setCustomer({
         id: '987654321',
-        name: data.Subscription.User.fullName,
-        email: data.Subscription.User.email,
+        name: data?.Subscription?.User.fullName,
+        email: data?.Subscription?.User.email,
         photoUrl: 'https://cdn.discordapp.com/attachments/1007286935926095954/1011903660055343204/OMOCAT_Logo.png'
       })
       setDriver({
         id: '123456789',
-        name: data.fullName,
-        email: data.email,
-        photoUrl: data.imgUrl
+        name: data?.fullName,
+        email: data?.email,
+        photoUrl: data?.imgUrl
       })
     } catch (err) {
       console.log(err)
@@ -57,6 +68,7 @@ export default function TalkOne() {
 
   useFocusEffect(
     React.useCallback(() => {
+      dispatch(getDataChat())
       getData();
     }, [])
   );

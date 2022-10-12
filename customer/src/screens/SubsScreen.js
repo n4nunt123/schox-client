@@ -1,23 +1,63 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import {useState} from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import {baseUrl} from "../constants/baseUrl";
+import {useFocusEffect} from "@react-navigation/native";
+import * as React from "react";
+import moment from "moment";
 
-function SubsScreen() {
+import { useDispatch, useSelector } from "react-redux"
+import { getDataUser } from "../store/actions/userAction";
+
+function SubsScreen({navigation}) {
+
+    const dispatch = useDispatch()
+    const { user } = useSelector((state) => {
+        return state.userReducer
+    })
+    const date = moment(user.Subscription?.endDate).format('MMMM D, YYYY')
+
+    const checkDate = async () => {
+        try {
+            // const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            // let value = JSON.parse(jsonValue)
+            // if (moment() === moment(detail.Subscription?.endDate)) {
+            //     await axios({
+            //         url: baseUrl + "/users/subscriptions/" + value.id,
+            //         method: "patch",
+            //         headers: { access_token: value?.access_token },
+            //         body: {status: "nonactive"}
+            //     })
+            // } else {
+            //     console.log("belum selesai")
+            // }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            dispatch(getDataUser())
+        }, [])
+    );
     return (
         <View style={styles.container}>
             <View style={styles.subsView}>
                 <Text style={styles.subsText}>Subscriptions</Text>
             </View>
             <View style={styles.mainCard}>
-                <View style={styles.infoView}>
-                    <Text style={styles.infoText}>You already subscribed</Text>
-                </View>
                 <View>
+                    <Text style={styles.infoText}>You already subscribed</Text>
                     <Text style={styles.endDateText}>End Date</Text>
                 </View>
                 <View>
-                    <Text style={styles.dateText}>3 November, 2022</Text>
+                    <Text style={styles.dateText}>{date}</Text>
                 </View>
             </View>
+
             <StatusBar style="auto" />
         </View>
     );
@@ -44,7 +84,8 @@ const styles = StyleSheet.create({
         height: 750,
         borderRadius: 40,
         backgroundColor: '#FFFFFF',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingTop: 150
     },
     infoView: {
         height: 200,
