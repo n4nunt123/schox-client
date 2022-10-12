@@ -58,10 +58,9 @@ export default function HomeScreen({navigation, route}) {
     useFocusEffect(
         React.useCallback(() => {
             getData()
-                .then(() => getLocation())
+            getLocation()
         }, [])
     )
-
     return (
         <SafeAreaView style={styles.container}>
             <Pressable onPress={() => {
@@ -72,8 +71,8 @@ export default function HomeScreen({navigation, route}) {
                 </View>
                 <View style={{flex: 4, flexDirection: "column", marginHorizontal: 30, paddingLeft: 30}}>
                     <Text style={{fontSize: 20, fontWeight: "bold"}}>Hello, {detail?.fullName}</Text>
-                    <View style={{backgroundColor: 'green', borderRadius: 30, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}}>
-                        <Text style={{color: "white"}}>Available</Text>
+                    <View style={[{borderRadius: 30, alignItems: "center", justifyContent: "center", marginVertical: 10, padding: 5}, detail.driverStatus === "Available" ? {backgroundColor: 'green'} : {backgroundColor: 'grey'}]}>
+                        <Text style={{color: "white"}}>{detail?.driverStatus === "Available" ? detail?.driverStatus : "Non Available"}</Text>
                     </View>
                 </View>
             </Pressable>

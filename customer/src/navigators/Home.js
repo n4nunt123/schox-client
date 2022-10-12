@@ -44,7 +44,7 @@ export default function HomeTab({ navigation }) {
           height: 90,
           elevation: 0,
           shadowColor: "#000000",
-          borderTopWidth: 0
+          borderTopWidth: 0,
         },
         tabBarIcon: ({ focused, color, size }) => (
           <Image
@@ -90,7 +90,22 @@ export default function HomeTab({ navigation }) {
         })}
       />
       <Tab.Screen name="Subscription" component={SubscriptionNavigator} />
-      <Tab.Screen name="Profile" component={ProfileNavigator} />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileNavigator}
+        options={({ route }) => ({
+          tabBarStyle: ((route) => {
+            const routeName = getFocusedRouteNameFromRoute(route);
+            switch (routeName) {
+              case "TopUp":
+              case "Midtrans":
+                return styles.hideTabStyles;
+              default:
+                return styles.showTabStyles;
+            }
+          })(route),
+        })}
+      />
     </Tab.Navigator>
   );
 }

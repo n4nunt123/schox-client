@@ -1,7 +1,7 @@
-import {Text, View, StyleSheet, Image, Modal, Pressable, ScrollView, TouchableHighlight} from "react-native";
+import {Text, View, StyleSheet, Image, ScrollView, TouchableHighlight} from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {Picker} from '@react-native-picker/picker';
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import {useFocusEffect} from "@react-navigation/native";
@@ -9,7 +9,6 @@ import * as React from "react";
 import {baseUrl} from "../constants/baseUrl";
 
 export default function ProfileScreen({ navigation }) {
-    const [modalVisible, setModalVisible] = useState(false);
     const [status, setStatus] = useState("Available");
     const [detail, setDetail] = useState({})
 
@@ -41,6 +40,19 @@ export default function ProfileScreen({ navigation }) {
             console.log(e)
         }
     }
+
+    const updateStatus = async (value) => {
+        try {
+            const { data } = await axios({
+                url: baseUrl + "/drivers/" + detail.id,
+                method: "PATCH",
+                data: { driverStatus: value }
+            })
+            console.log(data)
+        } catch (e) {
+            console.log(e)
+        }
+    }
     useFocusEffect(
         React.useCallback(() => {
             getData()
@@ -56,34 +68,24 @@ export default function ProfileScreen({ navigation }) {
                 <View style={styles.cardProfile}>
                     <Image source={{uri: `${detail?.imgUrl}`}} style={{height: 80, width: 80, borderRadius: 50}} />
                     <Text style={styles.driverText}>Mr. {detail?.fullName}</Text>
-                    <View style={{flexDirection: "row", width: "100%", justifyContent: "center"}}>
-                        <TouchableHighlight style={[styles.button, styles.buttonOpen]} onPress={() => setModalVisible(true)}>
-                            <Text style={{color: "white"}}>{status}</Text>
-                        </TouchableHighlight>
+                    <View style={{flexDirection: "row", width: "100%", justifyContent: "center" }}>
+                        <View style={{borderRadius: 10, borderWidth: 1, borderColor: '#bdc3c7', overflow: 'hidden', justifyContent: "center", alignItems: "center", width: 160}}>
+                            <Picker
+                                style={[styles.button, {height:20, width:"100%"}]}
+                                selectedValue={status}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    setStatus(itemValue)
+                                    updateStatus(itemValue)
+                                }
+                                }>
+                                <Picker.Item label="Available" value="Available" />
+                                <Picker.Item label="Non Available" value="NonAvailable" />
+                            </Picker>
+                        </View>
                         <TouchableHighlight onPress={() => logout()} style={[styles.button,styles.buttonLogout]}>
                             <Text style={{color: "white"}}>Logout</Text>
                         </TouchableHighlight>
                     </View>
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalVisible}>
-                        <View style={styles.centeredView}>
-                            <View style={styles.modalView}>
-                                <Picker
-                                    style={{height:30, width:160}}
-                                    selectedValue={status}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        setStatus(itemValue)
-                                        setModalVisible(!modalVisible)
-                                    }
-                                    }>
-                                    <Picker.Item label="Available" value="Available" />
-                                    <Picker.Item label="Not Available" value="Not Available" />
-                                </Picker>
-                            </View>
-                        </View>
-                    </Modal>
                 </View>
                 {/*  balance  */}
                 <View style={styles.cardBalance}>
@@ -156,7 +158,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 10,
         elevation: 2,
-        marginHorizontal: 5
+        marginHorizontal: 5,
+
     },
     buttonOpen: {
         backgroundColor: 'green',
@@ -166,6 +169,9 @@ const styles = StyleSheet.create({
     },
     buttonLogout: {
         backgroundColor: '#c70000',
+        alignItems: "center",
+        justifyContent: "center",
+        width: 80
     },
     textStyle: {
         color: 'white',

@@ -37,7 +37,7 @@ export default function HomeScreen({navigation}) {
                 method: "GET",
                 headers: { access_token: token }
             })
-            setDetail(data)
+            setDetail(data.user)
         } catch (e) {
             console.log(e)
         }
@@ -55,7 +55,7 @@ export default function HomeScreen({navigation}) {
                 <View style={styles.userView}>
 
                     <View style={{marginStart: 15}}>
-                        <Text style={styles.hallo}>Hello, {detail.fullName}!</Text>
+                        <Text style={styles.hallo}>Hello, {detail?.fullName}!</Text>
                         <Text style={styles.date}>{date}</Text>
                     </View>
                 </View>
@@ -79,14 +79,14 @@ export default function HomeScreen({navigation}) {
                     </View>
                     <View style={{flex: 4, flexDirection: "column"}}>
                         <Text style={{fontSize: 22, fontWeight: 'bold', color: '#2b377e'}}>Hello, {detail?.fullName}</Text>
-                        <Text style={{color: "#a7a8c1"}}>10 October 2022</Text>
+                        <Text style={{color: "#a7a8c1"}}>{date}</Text>
                     </View>
                 </View>
                 <Pressable onPress={() => navigation.navigate('Trip')} style={styles.containerChild}>
                     <Image source={require("../../assets/road.png")} style={{width: 100, height: 100}} />
                     <View style={{flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
                         <Text style={styles.cardText}>Trip Status</Text>
-                        <Text style={styles.tripStatus}>On the way</Text>
+                        {/*<Text style={styles.tripStatus}>On the way</Text>*/}
                     </View>
                 </Pressable>
                 <Pressable onPress={() => navigation.navigate('Driver')} style={styles.containerChild}>

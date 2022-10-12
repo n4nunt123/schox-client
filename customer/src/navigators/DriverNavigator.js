@@ -6,7 +6,7 @@ import ChatScreen from '../screens/ChatScreen'
 
 const Stack = createNativeStackNavigator();
 
-export default function HomeNavigator() {
+export default function DriverNavigator() {
   return (
     <Stack.Navigator initialRouteName="Driver">
       <Stack.Screen
