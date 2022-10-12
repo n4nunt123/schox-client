@@ -11,6 +11,8 @@ import moment from "moment";
 function SubsScreen({navigation}) {
     const [detail, setDetail] = useState({})
     const date = moment(detail.Subscription?.endDate).format('MMMM D, YYYY')
+
+
     const getData = async () => {
         try {
             const jsonValue = await AsyncStorage.getItem('@storage_Key')
@@ -28,6 +30,24 @@ function SubsScreen({navigation}) {
                 headers: { access_token: token }
             })
             setDetail(data.user)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    const checkDate = async () => {
+        try {
+            // const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            // let value = JSON.parse(jsonValue)
+            // if (moment() === moment(detail.Subscription?.endDate)) {
+            //     await axios({
+            //         url: baseUrl + "/users/subscriptions/" + value.id,
+            //         method: "patch",
+            //         headers: { access_token: value?.access_token },
+            //         body: {status: "nonactive"}
+            //     })
+            // } else {
+            //     console.log("belum selesai")
+            // }
         } catch (e) {
             console.log(e)
         }
@@ -51,6 +71,7 @@ function SubsScreen({navigation}) {
                     <Text style={styles.dateText}>{date}</Text>
                 </View>
             </View>
+
             <StatusBar style="auto" />
         </View>
     );

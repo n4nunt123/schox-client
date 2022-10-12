@@ -70,9 +70,27 @@ export default function HomeScreen({navigation, route}) {
 
             if (data.message === "BOOKED") {
                 setIsBooked("BOOKED")
-                setEndDate(data.endDate)
+                setEndDate(data.subsDetail.endDate)
             } else {
                 setIsBooked(null)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const checkSubs = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            let value = JSON.parse(jsonValue)
+            if (moment(endDate).format('MMMM D, YYYY') === moment().format('MMMM D, YYYY')) {
+                const {data} = await axios({
+                    url: baseUrl + "/drivers/subscriptions/" + value.id,
+                    method: "DELETE"
+                })
+                console.log(data, "<<<")
+            } else {
+                console.log("belum habis")
             }
         } catch (e) {
             console.log(e)

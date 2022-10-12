@@ -13,6 +13,8 @@ export default function ProfileScreen({navigation}) {
     const [status, setStatus] = useState("Available");
     const [detail, setDetail] = useState({})
     const [isBooked, setIsBooked] = useState(null)
+    const [subsDetail, setSubsDetail] = useState({})
+    const [userDetail, setUserDetail] = useState({})
 
     const logout = async () => {
         try {
@@ -50,9 +52,10 @@ export default function ProfileScreen({navigation}) {
                 url: baseUrl + "/drivers/subscriptions/" + id,
                 method: "GET",
             })
-            console.log(data)
             if (data.message === "BOOKED") {
                 setIsBooked("BOOKED")
+                setSubsDetail(data.subsDetail)
+                setUserDetail(data.user)
             } else {
                 setIsBooked(null)
             }
@@ -73,12 +76,12 @@ export default function ProfileScreen({navigation}) {
             console.log(e)
         }
     }
+
     useFocusEffect(
         React.useCallback(() => {
             getData()
         }, [])
     )
-    console.log(isBooked)
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topCard}>
@@ -118,7 +121,7 @@ export default function ProfileScreen({navigation}) {
                 </View>
                 {/*  balance  */}
                 <View style={styles.cardBalance}>
-                    <Text style={styles.modalText}>Balance: Rp. {detail?.balance}</Text>
+                    <Text style={styles.modalText}>Balance: Rp. {detail.balance?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</Text>
                 </View>
                 {/*  schedule  */}
                 <View style={styles.cardSchedule}>
@@ -129,10 +132,10 @@ export default function ProfileScreen({navigation}) {
                             </View> :
                             <>
                                 <View style={styles.schedule}>
-                                    <Text>Schedule</Text>
+                                    <Text>To School: {subsDetail?.toShoolTime}</Text>
                                 </View>
                                 <View style={styles.schedule}>
-                                    <Text>Schedule</Text>
+                                    <Text>Back to home: {subsDetail?.goHomeTime}</Text>
                                 </View>
                             </>
                         }

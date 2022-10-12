@@ -51,12 +51,14 @@ export default function TopUp({ navigation }) {
           <Text style={styles.hallo}>Enter Top up amount</Text>
         </View>
       </View>
-      <TextInput
-        style={styles.input}
-        onChangeText={setValue}
-        placeholder="Rp 0"
-        keyboardType="numeric"
-      />
+      <View style={styles.inputcontainer}>
+        <TextInput
+          style={styles.input}
+          onChangeText={setValue}
+          placeholder="Rp 0"
+          keyboardType="numeric"
+        />
+      </View>
       <View style={{flexDirection: "row-reverse"}}>
       <Text style={styles.description}>Min Rp 100.000</Text>
       </View>
@@ -76,7 +78,7 @@ const styles = StyleSheet.create({
     padding: 10
   },
   userView: {
-    width: "100%",
+    width: "80%",
     flexDirection: "row",
     marginTop: 20,
     marginBottom: 10,
@@ -87,6 +89,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 2,
     marginTop: 5,
+    paddingHorizontal: 35
+  },
+  inputcontainer: {
+    width: '84%',
+    alignItems: "center",
+    justifyContent: "center"
   },
   input: {
     height: 40,
@@ -94,7 +102,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: 'white',
-    borderColor: '#a0acda'
+    borderColor: '#a0acda',
+    width: '100%',
+    marginLeft: 60
   },
   button: {
     paddingVertical: 14,
@@ -114,6 +124,8 @@ const styles = StyleSheet.create({
   description: {
     color: '#ec5f58',
     fontSize: 12,
-    marginBottom: 10
+    marginBottom: 10,
+    paddingRight: 30,
+    marginTop: 5
   }
 });
