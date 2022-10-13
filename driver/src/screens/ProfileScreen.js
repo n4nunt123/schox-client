@@ -187,9 +187,12 @@ export default function ProfileScreen({ navigation }) {
               setIsArrive(false);
               setReady(true);
             }}
-            style={styles.pickup}
+            style={styles.schedule}
         >
-          <Text>FINISH</Text>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.pickup}>ARRIVED</Text>
+            <Image source={car} style={styles.car} />
+          </View>
         </TouchableHighlight>
     );
   };
@@ -209,9 +212,12 @@ export default function ProfileScreen({ navigation }) {
               setReady(false);
               setSecondPickup(true);
             }}
-            style={styles.pickup}
+            style={styles.schedule}
         >
-          <Text>READY TO PICKUP ON SCHOOL?</Text>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.pickup}>PICKUP (SCHOOL)</Text>
+            <Image source={car} style={styles.car} />
+          </View>
         </TouchableHighlight>
     );
   };
@@ -230,9 +236,12 @@ export default function ProfileScreen({ navigation }) {
               setSecondPickup(false);
               setFinish(true);
             }}
-            style={styles.pickup}
+            style={styles.schedule}
         >
-          <Text>GO HOME</Text>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.pickup}>GO HOME</Text>
+            <Image source={car} style={styles.car} />
+          </View>
         </TouchableHighlight>
     );
   };
@@ -248,9 +257,12 @@ export default function ProfileScreen({ navigation }) {
               });
               setFinish(false);
             }}
-            style={styles.pickup}
+            style={styles.schedule}
         >
-          <Text>FINISH</Text>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.pickup}>FINISH</Text>
+            <Image source={car} style={styles.car} />
+          </View>
         </TouchableHighlight>
     );
   };

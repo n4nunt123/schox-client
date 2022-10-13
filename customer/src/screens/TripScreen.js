@@ -48,7 +48,7 @@ export default function TripScreen() {
         <View style={styles.container}>
             {/* <Text>{JSON.stringify(driverCoordinate)}</Text> */}
             <View style={styles.cardTop}>
-                <Text>STATUS:  pick up</Text>
+                <Text style={{fontWeight: "bold"}}>TRACK DRIVER</Text>
             </View>
             <View style={styles.cardBottom}>
                 <MapView
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     },
     cardTop: {
         width: '90%',
-        height: 100,
+        height: 30,
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "white",
