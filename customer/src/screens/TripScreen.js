@@ -43,7 +43,7 @@ export default function TripScreen() {
     useEffect(() => {
       getLocation();
     }, [])
-    // console.log(driverCoordinate);
+    console.log(driverCoordinate);
     return (
         <View style={styles.container}>
             {/* <Text>{JSON.stringify(driverCoordinate)}</Text> */}
