@@ -1,10 +1,10 @@
 import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableHighlight,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Picker } from "@react-native-picker/picker";
@@ -364,4 +364,5 @@ const styles = StyleSheet.create({
     width: 270,
     flexDirection: "row",
   },
+
 });
