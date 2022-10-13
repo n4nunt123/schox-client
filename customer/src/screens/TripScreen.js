@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import MapViewDirections from "react-native-maps-directions";
 import * as React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const mapRef = React.createRef();
 export default function TripScreen() {
@@ -35,10 +34,7 @@ export default function TripScreen() {
                 },
             });
 
-            setMyLocation({
-                longitude: location.coords.longitude,
-                latitude: location.coords.latitude,
-            });
+            setMyLocation(location.coords);
         } catch (e) {
             console.log(e);
         }
@@ -47,13 +43,46 @@ export default function TripScreen() {
     useEffect(() => {
       getLocation();
     }, [])
-    console.log(myLocation);
+    // console.log(driverCoordinate);
     return (
         <View style={styles.container}>
-            <Text>TRIP SCREEN</Text>
-            <MapView style={styles.map} />
             {/* <Text>{JSON.stringify(driverCoordinate)}</Text> */}
-            
+            <View style={styles.cardTop}>
+                <Text>STATUS:  pick up</Text>
+            </View>
+            <View style={styles.cardBottom}>
+                <MapView
+                    ref={mapRef}
+                    style={styles.map}
+                    minZoomLevel={12}
+                    provider={PROVIDER_GOOGLE}
+                    showsUserLocation={true}
+                    zoomControlEnabled={true}
+                    initialRegion={{
+                        latitude: -6.200000,
+                        longitude: 106.816666,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}
+                >
+                    {myLocation.latitude &&
+                        <Marker coordinate={myLocation} title={"My Location"}/>
+                    }
+                    {driverCoordinate.latitude &&
+                        <Marker coordinate={driverCoordinate} title={"Driver Location"} pinColor={"blue"}/>
+                    }
+                    {driverCoordinate.latitude !== null &&
+                        <MapViewDirections
+                            origin={driverCoordinate}
+                            destination={myLocation}
+                            apikey={"AIzaSyArgl6qu_3u4Ub5rLzrlQ5YQ3oeOIrrWdE"}
+                            strokeWidth={4}
+                            strokeColor="red"
+                        />
+                    }
+
+                </MapView>
+            </View>
         </View>
     );
 }
@@ -64,9 +93,30 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         backgroundColor: "#DEE9FF",
     },
+    cardTop: {
+        width: '90%',
+        height: 100,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "white",
+        borderRadius: 20,
+        marginVertical: 20
+    },
+    cardBottom: {
+        overflow: "hidden",
+        flex: 3,
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        width: "100%",
+        backgroundColor: "white",
+        borderTopStartRadius: 30,
+        borderTopEndRadius: 30,
+        borderWidth: 1,
+        borderColor: "white",
+
+    },
     map: {
-        height: 500,
-        width: "95%",
-        marginTop: 80,
+        height: "100%",
+        width: "100%",
     },
 });
