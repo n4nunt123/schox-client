@@ -123,12 +123,17 @@ export default function ProfileScreen({ navigation }) {
       console.log(e);
     }
   };
-
+  
   // RENDER SCHEDULE
-  const renderPickup = () => {
+  const renderPickup = () => { // Antar
     return (
         <TouchableHighlight
             onPress={() => {
+              socketInstance.emit("send:coordinate-customer", {
+                longitude: +userDetail?.longitude,
+                latitude: +userDetail?.latitude,
+              });
+              socketInstance.emit('send:status-driver', ('Driver Go to Your Home'))
               start()
               navigation.navigate({
                 name: "Home",
@@ -154,6 +159,11 @@ export default function ProfileScreen({ navigation }) {
     return (
         <TouchableHighlight
             onPress={() => {
+              socketInstance.emit("send:coordinate-customer", {
+                longitude: +school?.longitude,
+                latitude: +school?.latitude,
+              });
+              socketInstance.emit('send:status-driver', ('Driver Go to School'))
               navigation.navigate({
                 name: "Home",
                 params: {
@@ -178,6 +188,8 @@ export default function ProfileScreen({ navigation }) {
     return (
         <TouchableHighlight
             onPress={() => {
+              socketInstance.emit("send:coordinate-customer", '');
+              socketInstance.emit('send:status-driver', ('Driver has arrive on the School'))
               stop()
               navigation.navigate({
                 name: "Home",
@@ -193,10 +205,15 @@ export default function ProfileScreen({ navigation }) {
         </TouchableHighlight>
     );
   };
-  const renderReady = () => {
+  const renderReady = () => { // Jemput
     return (
         <TouchableHighlight
             onPress={() => {
+              socketInstance.emit("send:coordinate-customer", {
+                longitude: +school?.longitude,
+                latitude: +school?.latitude,
+              });
+              socketInstance.emit('send:status-driver', ('Driver Picking up your child at the School'))
               start()
               navigation.navigate({
                 name: "Home",
@@ -219,6 +236,11 @@ export default function ProfileScreen({ navigation }) {
     return (
         <TouchableHighlight
             onPress={() => {
+              socketInstance.emit("send:coordinate-customer", {
+                longitude: +userDetail?.longitude,
+                latitude: +userDetail?.latitude,
+              });
+              socketInstance.emit('send:status-driver', ('Driver on Trip to Your Home'))
               navigation.navigate({
                 name: "Home",
                 params: {
@@ -240,6 +262,8 @@ export default function ProfileScreen({ navigation }) {
     return (
         <TouchableHighlight
             onPress={() => {
+              socketInstance.emit("send:coordinate-customer", '');
+              socketInstance.emit('send:status-driver', ('Order Finished'))
               stop()
               navigation.navigate({
                 name: "Home",
